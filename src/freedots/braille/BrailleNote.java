@@ -25,6 +25,8 @@ package freedots.braille;
 import java.util.logging.Logger;
 
 import freedots.Options;
+import freedots.braille.articulation.*;
+import freedots.braille.ornament.*;
 import freedots.music.AbstractPitch;
 import freedots.music.Accidental;
 import freedots.music.Articulation;
@@ -177,26 +179,6 @@ public class BrailleNote extends BrailleList {
     default:              throw new AssertionError(ornament);
     }
   }
-  public abstract static class OrnamentSign extends Sign {
-    OrnamentSign(final String data) { super(data); }
-  }
-  public static class MordentSign extends OrnamentSign {
-    MordentSign() { super(braille(5, 235, 123)); }
-    public String getDescription() { return "A mordent sign"; }
-  }
-  public static class InvertedMordentSign extends OrnamentSign {
-    InvertedMordentSign() { super(braille(6, 235, 123)); }
-    public String getDescription() { return "A inverted mordent sign"; }
-  }
-  public static class TrillSign extends OrnamentSign {
-    TrillSign() { super(braille(235)); }
-    public String getDescription() { return "A trill sign"; }
-  }
-  public static class TurnSign extends OrnamentSign {
-    TurnSign() { super(braille(6, 256)); }
-    public String getDescription() { return "A turn sign"; }
-  }
-
   private static ArticulationSign createArticulationSign(Articulation articulation) {
     switch (articulation) {
     case accent:        return new AccentSign();
@@ -209,7 +191,8 @@ public class BrailleNote extends BrailleList {
     default:            throw new AssertionError(articulation);
     }
   }
-  public abstract static class ArticulationSign extends Sign {
+  /*
+    public abstract static class ArticulationSign extends Sign {
     ArticulationSign(final String data) { super(data); }
   }
   public static class AccentSign extends ArticulationSign {
@@ -242,4 +225,5 @@ public class BrailleNote extends BrailleList {
     TenutoSign() { super(braille(456, 236)); }
     public String getDescription() { return "A tenuto sign"; }
   }
+  */
 }
