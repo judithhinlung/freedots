@@ -32,17 +32,9 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import freedots.braille.AccidentalSign;
-import freedots.braille.BarSign;
-import freedots.braille.BrailleFingering;
-import freedots.braille.BrailleNote;
-import freedots.braille.Dot;
-import freedots.braille.OctaveSign;
-import freedots.braille.PitchAndValueSign;
-import freedots.braille.RestSign;
-import freedots.braille.SlurSign;
-import freedots.braille.Text;
-import freedots.braille.TupletSign;
+import freedots.braille.*;
+import freedots.braille.articulation.*;
+import freedots.braille.ornament.*;
 import freedots.gui.SignColorMap;
 
 /** Pops up a dialog to describe the different colors used for the various
@@ -102,12 +94,12 @@ class ColorLegend extends JDialog {
     panFinger.setBorder(BorderFactory.createTitledBorder("Fingering"));
 
     JPanel panArticulation = new JPanel();
-    panArticulation.setBackground(colorMap.get(BrailleNote.ArticulationSign.class));
+    panArticulation.setBackground(colorMap.get(ArticulationSign.class));
     panArticulation.setPreferredSize(new Dimension(100, 50));
     panArticulation.setBorder(BorderFactory.createTitledBorder("Articulations"));
     
     JPanel panOrnament = new JPanel();
-    panOrnament.setBackground(colorMap.get(BrailleNote.OrnamentSign.class));
+    panOrnament.setBackground(colorMap.get(OrnamentSign.class));
     panOrnament.setPreferredSize(new Dimension(100, 50));
     panOrnament.setBorder(BorderFactory.createTitledBorder("Ornaments"));
 

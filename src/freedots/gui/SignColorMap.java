@@ -26,6 +26,8 @@ import java.awt.Color;
 import java.util.HashMap;
 
 import freedots.braille.*;
+import freedots.braille.articulation.*;
+import freedots.braille.ornament.*;
 
 /** A map of {@link freedots.braille.Sign} subclasses to associated color
  *  values.
@@ -48,8 +50,8 @@ public class SignColorMap extends HashMap<Class<? extends Sign>, Color> {
     put(AccidentalSign.class, Color.red);
     put(BrailleFingering.FingerSign.class, new Color(205, 189, 7));
     put(BrailleNote.GraceSign.class, Color.green);
-    put(BrailleNote.OrnamentSign.class, Color.green);
-    put(BrailleNote.ArticulationSign.class, new Color(0, 250, 154));
+    put(OrnamentSign.class, Color.green);
+    put(ArticulationSign.class, new Color(0, 250, 154));
     put(BarSign.class, new Color(255, 126, 0));
     put(PitchAndValueSign.class, Color.blue);
     put(PostDottedDoubleBarSign.class, new Color(255, 126, 0));
