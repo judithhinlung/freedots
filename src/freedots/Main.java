@@ -60,7 +60,12 @@ public final class Main {
    * @param args Arguments from the command-line
    */
   public static void main(final String[] args) {
-    macSetup();
+    // Use native features on Mac OS X for accessibility
+    if (System.getProperty("os.name").equals("Mac OS X")) {
+      System.setProperty("apple.laf.useScreenMenuBar", "true");
+      System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Freedots");
+    }
+ 
     Options options = null;
     try {
       options = new Options(args);
@@ -147,14 +152,6 @@ public final class Main {
       }
     }
   }
-
-   // Setup to use native features on OS X
-  private static void macSetup() {
-        if (System.getProperty("os.name").equals("Mac OS X")) {
-      System.setProperty("apple.laf.useScreenMenuBar", "true");
-      System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Freedots");
-    }
-   };
   // Constants from build.xml
   public static final String VERSION;
   static {
