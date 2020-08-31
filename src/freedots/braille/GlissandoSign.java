@@ -20,7 +20,14 @@
  *
  * This file is maintained by Mario Lang <mlang@delysid.org>.
  */
-/** This package contains signs for note ornaments: 
- * mordent, inverted mordent, trill, turn. 
- */
-package freedots.braille.ornament;
+package freedots.braille;
+
+public class GlissandoSign extends Sign {
+  public GlissandoSign() {
+      super(braille(4, 1));
+  }
+
+  public String getDescription() {
+      return "A glissando sign";
+  }
+}
