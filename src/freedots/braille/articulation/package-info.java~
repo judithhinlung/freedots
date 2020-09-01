@@ -20,15 +20,20 @@
  *
  * This file is maintained by Mario Lang <mlang@delysid.org>.
  */
+/** The main goal is to get more fine-grained information about the meaning
+ * of individual braille signs.  First of all, all braille signs have an
+ * associated description string now.  Additionally, there is now a distinction
+ * between "score objects" (those objects that relate to the visual
+ * representation of a score) and individual braille signs that represent
+ * them.  {@link freedots.braille.BrailleList#getSignAtIndex} can be used to
+ * retrieve information about the braille at a character index, and
+ * {@link freedots.braille.BrailleList#getScoreObjectAtIndex} can be used
+ * to retrieve the smallest possible logical score object (like
+ * {@link freedots.musicxml.Note}.
+ * <p>
+ * Interface {@link freedots.braille.BrailleSequence} is the heart of this
+ * package.
+ * To add further properties to braille signs (like colour for visual markup)
+ * modify this interface and extend its implementors accordingly.
+ */
 package freedots.braille.ornament;
-
-import freedots.braille.ornament.OrnamentSign;
-public class MordentSign extends OrnamentSign {
-  public MordentSign() {
-    super(braille(5, 235, 123));
-  }
-
-  public String getDescription() {
-    return "A mordent sign";
-  }
-}
