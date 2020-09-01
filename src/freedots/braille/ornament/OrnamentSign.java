@@ -26,5 +26,5 @@ import freedots.braille.Sign;
 public abstract class OrnamentSign extends Sign {
   public OrnamentSign(final String data) {
     super(data);
-  }
+  } 
 }
