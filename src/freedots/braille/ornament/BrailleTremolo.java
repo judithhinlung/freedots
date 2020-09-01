@@ -72,7 +72,7 @@ public class BrailleTremolo extends BrailleList {
       return "Tremolo in " + noteValueNames[val-1];
     }
 
-    private static final String[] NOTEVALUES = new String[] {braille(12), braille(123), braille(5), braille(13), braille(3)};
+    private static final String[] NOTEVALUES = new String[] {braille(1), braille(12), braille(123), braille(5), braille(13), braille(3)};
 
     private static final String[] noteValueNames = new String[] {"8ths", "16ths", "32ths", "64ths", "128ths"};
   }
