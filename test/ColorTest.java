@@ -6,8 +6,7 @@ import freedots.braille.BrailleNote;
 import freedots.braille.DoubleBarSign;
 import freedots.gui.SignColorMap;
 
-
-public class TestColor extends junit.framework.TestCase {
+public class ColorTest extends junit.framework.TestCase {
   public void testColorLookup() {
     SignColorMap scm = SignColorMap.DEFAULT;
     assertEquals("accent color", new Color(0, 250, 154),

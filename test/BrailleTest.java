@@ -4,7 +4,7 @@ import freedots.music.Fingering;
 
 import freedots.braille.BrailleFingering;
 import freedots.braille.ornament.BrailleTremolo;
-public class TestBraille extends junit.framework.TestCase {
+public class BrailleTest extends junit.framework.TestCase {
   // Helper methods
   // Converts a braille dot pattern to ISO 11548-1.
   protected static final int dotsToBits(final int dots) {

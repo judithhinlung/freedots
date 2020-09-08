@@ -5,7 +5,7 @@ import java.util.List;
 import freedots.math.Fraction;
 import freedots.music.AugmentedPowerOfTwo;
 
-public class TestAugmentedFraction extends junit.framework.TestCase {
+public class AugmentedFractionTest extends junit.framework.TestCase {
   public void testDotInference() {
     AugmentedPowerOfTwo af;
     Fraction f;

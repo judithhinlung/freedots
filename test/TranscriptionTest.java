@@ -5,7 +5,7 @@ import freedots.Options;
 import freedots.musicxml.Score;
 import freedots.transcription.Transcriber;
 
-public class TestTranscription extends junit.framework.TestCase {
+public class TranscriptionTest extends junit.framework.TestCase {
   private static final String NL = System.getProperty("line.separator");
 
   public void testPartMeasureInAccord()

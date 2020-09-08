@@ -35,10 +35,18 @@
            location="dtd/musicxml/2.0/partwise.dtd"/>
       <dtd publicId="-//Recordare//DTD MusicXML 2.0 Opus//EN"
            location="dtd/musicxml/2.0/opus.dtd"/>
+      <dtd publicId="-//Recordare//DTD MusicXML 3.0 Partwise//EN"
+           location="dtd/musicxml/3.0/partwise.dtd"/>
+      <dtd publicId="-//Recordare//DTD MusicXML 3.1 Partwise//EN"
+           location="dtd/musicxml/3.1/partwise.dtd"/>
+      <dtd publicId="-//Recordare//DTD MusicXML 3.1 Opus//EN"
+           location="dtd/musicxml/3.1/opus.dtd"/>
       <schema namespace="http://www.w3.org/XML/1998/namespace"
               file="xsd/xml.xsd" />
       <schema namespace="http://www.w3.org/1999/xlink"
               file="xsd/xlink.xsd" />
+            <schema namespace="http://www.w3.org/2001/XMLSchema"
+		    file="xsd/musicxml.xsd" />
     </schemavalidate>
   </presetdef>
 
@@ -124,7 +132,8 @@
       <classpath refid="class.path.test" />
       <formatter type="brief" usefile="false" />
       <batchtest>
-        <fileset dir="${test}" includes="**/Test*.class" />
+        <fileset dir="${test}" includes="**/*Test.java
+"/>
       </batchtest>
     </junit>
     <fail message="test failed" if="test.failure" />
@@ -134,7 +143,7 @@
   <target name="validate.scores">
     <validate-musicxml>
       <fileset dir="scores" includes="**/*.xml"/>
-      <fileset dir="${test}" includes="*.xml"/>
+      <fileset dir="${test}"  includes="*.xml"/>
     </validate-musicxml>
   </target>
 

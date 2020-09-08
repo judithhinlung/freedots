@@ -677,13 +677,30 @@ public final class Note implements RhythmicElement, freedots.music.TupletElement
           if (node.getNodeType() == Node.ELEMENT_NODE) {
             if (node.getNodeName().equals("mordent")) {
               ornaments.add(Ornament.mordent);
-            } else if (node.getNodeName().equals("inverted-mordent")) {
+            }
+            else if (node.getNodeName().equals("inverted-mordent")) {
               ornaments.add(Ornament.invertedMordent);
-            } else if (node.getNodeName().equals("trill-mark")) {
+            }
+            else if (node.getNodeName().equals("trill-mark")) {
               ornaments.add(Ornament.trill);
-            } else if (node.getNodeName().equals("turn")) {
+            }
+            else if (node.getNodeName().equals("turn")) {
               ornaments.add(Ornament.turn);
-            } else {
+            }
+            else if (node.getNodeName().equals("inverted-turn")) {
+              ornaments.add(Ornament.invertedTurn);
+            }
+            else if (node.getNodeName().equals("delayed-turn")) {
+              ornaments.add(Ornament.delayedTurn);
+            }
+            else if (node.getNodeName().equals("delayed-inverted-turn")) {
+              ornaments.add(Ornament.delayedInvertedTurn);
+            }
+            else if (node.getNodeName().equals("tremolo")) {
+              // TODO: Distinguish between single and double tremolo types
+              ornaments.add(Ornament.tremolo);
+            }
+            else {
               LOG.warning("Unhandled ornament " + node.getNodeName());
             }
           }

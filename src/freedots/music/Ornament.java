@@ -27,5 +27,5 @@ package freedots.music;
  *      Ornament (music)</a>
  */
 public enum Ornament {
-  mordent, invertedMordent, trill, turn;
+  mordent, invertedMordent, trill, turn, invertedTurn, delayedTurn, delayedInvertedTurn, tremolo;
 }

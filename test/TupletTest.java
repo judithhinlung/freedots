@@ -5,7 +5,7 @@ import freedots.Options;
 import freedots.musicxml.Score;
 import freedots.transcription.Transcriber;
 
-public class TestTuplet extends junit.framework.TestCase {
+public class TupletTest extends junit.framework.TestCase {
   private static final String NL = System.getProperty("line.separator");
   
   public void testTupletWithoutTupletElement()

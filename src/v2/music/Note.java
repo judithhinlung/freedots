@@ -7,7 +7,6 @@ import java.util.Set;
 import freedots.math.AbstractFraction;
 import freedots.math.Fraction;
 import freedots.math.PowerOfTwo;
-import freedots.v2.music.*;
 
 /** A wrapper around (the most important) note element.
  */
@@ -38,23 +37,32 @@ public class Note {
   }
 
   private Pitch pitch = null;
-
   public Pitch getPitch() {
     return this.pitch;
   }
-
   public void setPitch(Pitch pitch) {
     this.pitch = pitch;
   }
-
   private Grace grace = null;
-
   public Grace getGrace() {
     return this.grace;
   }
-
   public void setGrace(Grace grace) {
     this.grace = grace;
+  }
+  private Unpitched unpitched = null;
+  public Unpitched getUnpitched() {
+    return this.unpitched;
+  }
+  public void setUnpitched(Unpitched unpitched) {
+    this.unpitched = unpitched;
+  }
+  private Rest rest = null;
+  public Rest getRest() {
+    return this.rest;
+  }
+  public void setRest(Rest rest) {
+    this.rest = rest;
   }
 
     /**    private Part part;

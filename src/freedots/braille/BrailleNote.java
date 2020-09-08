@@ -176,6 +176,10 @@ public class BrailleNote extends BrailleList {
     case invertedMordent: return new InvertedMordentSign();
     case trill:           return new TrillSign();
     case turn:            return new TurnSign();
+    case invertedTurn:            return new InvertedTurnSign();
+    case delayedTurn:            return new DelayedTurnSign();
+    case delayedInvertedTurn:            return new DelayedInvertedTurnSign();
+      // TODO: Handle tremolos
     default:              throw new AssertionError(ornament);
     }
   }
