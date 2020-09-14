@@ -2,22 +2,22 @@ package v2.music;
 /** Miscellaneous ornaments
   */
 public class Ornament {
-  private String ornament;
+  private String type;
   private Accidental accidental;
-  public Ornament(String ornament) throws IllegalArgumentException {
-    if (!Utils.contains(ornament, validOrnaments)) {
-	throw new IllegalArgumentException("Unknown ornament: " + ornament);
+  public Ornament(String type) throws IllegalArgumentException {
+    if (!Utils.contains(type, validTypes)) {
+	throw new IllegalArgumentException("Unknown ornament: " + type);
     }
-    this.ornament = ornament;
+    this.type = type;
   }
   public void setAccidental(Accidental accidental) {
     this.accidental = accidental;
   }
   public String getOrnament() {
-    return this.ornament;
+    return this.type;
   }
   public String getAccidental() {
     return this.accidental.getAccidental();
   }
-    // private String[] validOrnaments = new String[]{"trill", "turn", "delayedTurn", "invertedTurn", "delayedInvertedTurn", verticalTturn", "invertedVerticalTurn", "shake", "wavyLine", "mordent", "invertedMordent", "schleifer", "tremolo", "haydn", "accidentalMark"};
+    private String[] validTypes = new String[]{"trill", "turn", "delayedTurn", "invertedTurn", "delayedInvertedTurn", "verticalTurn", "invertedVerticalTurn", "shake", "wavyLine", "mordent", "invertedMordent", "schleifer", "tremolo", "haydn", "accidentalMark"};
 }

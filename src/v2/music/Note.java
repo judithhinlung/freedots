@@ -1,9 +1,5 @@
 package v2.music;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.HashSet;
+import java.util.ArrayList;
 import freedots.math.AbstractFraction;
 import freedots.math.Fraction;
 import freedots.math.PowerOfTwo;
