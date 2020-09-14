@@ -1,6 +1,6 @@
 package v2.music;
 /** A container to represent a tie.
- */
+*/
 import java.util.ArrayList;
 public class Tie {
     /** @param tieTypes holds the tie type entities found in a note */

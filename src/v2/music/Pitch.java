@@ -1,8 +1,7 @@
 package v2.music;
 import v2.music.*;
 public class Pitch {
-  private int octave, alter;
-  private int step;
+  private int octave, step, alter;
   public Pitch(final int octave, final int step, final int alter) {
     this.octave = octave;
     this.step = step;

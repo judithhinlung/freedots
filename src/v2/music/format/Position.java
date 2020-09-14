@@ -1,17 +1,17 @@
 package v2.music.format;
 public class Position {
-  int defaultX;
-  int defaultY;
-  int relativeX;
-  int relativeY;
-  public Position(int defaultX, int defaultY) {
+  double defaultX;
+  double defaultY;
+  double relativeX;
+  double relativeY;
+  public Position(double defaultX, double defaultY) {
     this.defaultX = defaultX;
     this.defaultY = defaultY;
   }
-  public void setRelativeX(int relativeX) {
+  public void setRelativeX(double relativeX) {
     this.relativeX = relativeX;
   }
-  public void setRelativeY(int relativeY) {
+  public void setRelativeY(double relativeY) {
     this.relativeY = relativeY;
   }
 }

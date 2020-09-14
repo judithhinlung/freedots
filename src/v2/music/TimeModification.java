@@ -1,23 +1,31 @@
 package v2.music;
 public class TimeModification {
-  int normalNotes;
-  int actualNotes;
-    Type normalType;
-    boolean normalDot;
-    public TimeModification(int normalNotes, int ActualNotes,
-			    Type normalType, boolean normalDot) {
+  private int normalNotes;
+  private int actualNotes;
+  private String normalType;
+  private boolean isNormalDot;
+  public TimeModification(int normalNotes, int ActualNotes) {
+    this.normalNotes = normalNotes;
+    this.actualNotes = actualNotes;
+    this.normalType = null;
+    this.isNormalDot = true;
+  }
+  public TimeModification(int normalNotes, int actualNotes, String normalType, boolean isNormalDot) {
     this.normalNotes = normalNotes;
     this.actualNotes = actualNotes;
     this.normalType = normalType;
-    this.normalDot = true;
-    }
-    public int getNormalNotes() {
-	return this.normalNotes;
-    }
-    public int getActualNotes() {
-	return this.actualNotes;
-    }String getNormalType() {
-	return this.normalType.getType();
-    }
-
+    this.isNormalDot = isNormalDot;
   }
+  public int getNormalNotes() {
+    return this.normalNotes;
+  }
+  public int getActualNotes() {
+    return this.actualNotes;
+  }
+  public String getNormalType() {
+      return this.normalType;
+  }
+  public boolean getIsNormalDot() {
+    return this.isNormalDot;
+  }
+}

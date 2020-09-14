@@ -1,7 +1,8 @@
 package v2.music;
 public class Unpitched {
-    int displayStep, displayOctave;
-    public Unpitched() {
+  int displayStep;
+  int displayOctave;
+  public Unpitched() {
     this.displayStep = -1;
     this.displayOctave = -1;
   }
