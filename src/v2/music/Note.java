@@ -55,6 +55,20 @@ public class Note {
   public void setRest(Rest rest) {
     this.rest = rest;
   }
+  private int duration = 0;
+  public int getDuration() {
+    return this.duration;
+  }
+  public void setDuration(int duration) {
+    this.duration = duration;
+  }
+  private TimeModification timeModification;
+  public TimeModification getTimeModification() {
+    return this.timeModification;
+  }
+  public void setTimeModification(TimeModification timeModification) {
+    this.timeModification = timeModification;
+  }
   private boolean isTie = false;
   public boolean getTie() {
     return this.isTie;   
@@ -94,6 +108,13 @@ public class Note {
     }
     this.type = type;
   }
+  private boolean isDotted = false;
+  public boolean getDotted() {
+    return this.isDotted;
+  }
+  public void setDotted(boolean isDotted) {
+    this.isDotted = isDotted;
+  }
   private Accidental accidental = null;
   public Accidental getAccidental() {
     return this.accidental;
@@ -122,13 +143,99 @@ public class Note {
   public void setSlide(boolean hasSlide) {
     this.hasSlide = hasSlide;
   }
-    private ArrayList<Ornament> ornaments = new ArrayList<Ornament>();
+  private ArrayList<Ornament> ornaments = new ArrayList<Ornament>();
   public ArrayList<Ornament> getOrnaments() {
     return this.ornaments;
   }
   public void addOrnament(Ornament ornament) {
     ornaments.add(ornament);
   }
+  private ArrayList<Articulation> articulations = new ArrayList<Articulation>();
+  public ArrayList<Articulation> getArticulations() {
+    return this.articulations;
+  }
+  public void addArticulation(Articulation articulation) {
+    articulations.add(articulation);
+  }
+  private ArrayList<Technical> technicals = new ArrayList<Technical>();
+  public ArrayList<Technical> getTechnical() {
+    return this.technicals;
+  }
+  public void addTechnical(Technical technical) {
+    technicals.add(technical);
+  }
+  private Harmonic harmonic = null;
+  public Harmonic getHarmonic() {
+    return this.harmonic;
+  }
+  public void setHarmonic(Harmonic harmonic) {
+    this.harmonic = harmonic;
+  }
+  private Hole hole = null;
+  public Hole getHole() {
+    return this.hole;
+  }
+  public void setHole(Hole hole) {
+    this.hole = hole;
+  }
+  private Fingering fingering = null;
+  public Fingering getFingering() {
+    return this.fingering;
+  }
+  public void setFingering(Fingering fingering) {
+    this.fingering = fingering;
+  }
+  private PluckFingering pluckFingering = null;
+  public PluckFingering getPluckFingering() {
+    return this.pluckFingering;
+  }
+  public void setPluckFingering(PluckFingering pluckFingering) {
+    this.pluckFingering = pluckFingering;
+  }
+  private Fret fret = null;
+  public Fret getFret() {
+    return this.fret;
+  }
+  public void setFret(Fret fret) {
+    this.fret = fret;
+  }
+  private MusicString musicString = null;
+  public MusicString getMusicString() {
+    return this.musicString;
+  }
+  public void setMusicString(MusicString musicString) {
+    this.musicString = musicString;
+  }
+  Lyric lyric = null;
+  public Lyric getLyric() {
+    return this.lyric;
+  }
+  boolean hasFermata = false;
+  public boolean getFermata() {
+    return this.hasFermata;
+  }
+  public void setFermata(boolean fermata) {
+    this.hasFermata = fermata;
+  }
+  private ArrayList<Dynamic> dynamics = null;
+  public ArrayList<Dynamic> getDynamics() {
+    return this.dynamics;
+  }
+  public void addDynamic(Dynamic dynamic) {
+    dynamics.add(dynamic);
+  }
+  public void setLyric(Lyric lyric) {
+    this.lyric = lyric;
+  }
+  FiguredBass figuredBass = null;
+  public FiguredBass getFiguredBass() {
+    return this.figuredBass;
+  }
+  public void setFiguredBass(FiguredBass figuredBass) {
+    this.figuredBass = figuredBass;
+  }
+  int backup = 0;
+  int forward = 0;
     /**    private Part part;
     public Part getPart() { return part; }
 
@@ -159,8 +266,6 @@ public class Note {
     private boolean glisandoStop = false;
     private boolean slideStart = false;
     private boolean slideStop = false;
-
-
     void setMoment(final Fraction moment) { this.moment = moment; }
 
     public boolean isGrace() {

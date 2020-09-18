@@ -11,7 +11,7 @@ public class Technical {
   }
 
   public String getType() {
-      return this.type;
+    return this.type;
   }
-  private String[] validTypes = new String[]{"upBow", "downBow", "openString", "thumbPosition", "doubleTongue", "tripleTongue", "stopped", "snapPizzicato", "tap", "heel", "toe", "fingernails", "arrow", "handbell", "brassBend", "flip", "smear", "open", "halfMuted", "harmonMute", "golpe"};
+  private String[] validTypes = new String[]{"upBow", "downBow", "openString", "thumbPosition", "doubleTongue", "tripleTongue", "stopped", "snapPizzicato", "tap", "heel", "toe", "fingernails", "open", "halfMuted", "golpe"};
 }

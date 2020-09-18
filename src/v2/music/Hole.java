@@ -1,8 +1,14 @@
 package v2.music;
 public class Hole extends Technical {
-    String type;
-    public Hole(String type) throws IllegalArgumentException {
-	super(type);
-    }
-    private String[] validTypes = new String[]{"yes", "no", "half"};
+  /** 
+  * @param holeClosed  indicates whether the hole is closed (yes), open (no), or half-closed (half)
+  */
+  String holeClosed;
+  public Hole(String holeClosed) throws IllegalArgumentException {
+    super(holeClosed);
+  }
+  private String[] validTypes = new String[]{"yes", "no", "half"};
+  public String toString() {
+    return this.holeClosed;
+  }
 }
