@@ -26,7 +26,7 @@ public class NoteTest extends TestCase {
       Element stepElement = document.createElement("step");
       pitchElement.appendChild(stepElement);
       octaveElement.appendChild(document.createTextNode("4"));
-      pitchElement.appendChild(document.createTextNode("C"));
+      stepElement.appendChild(document.createTextNode("C"));
       return noteElement;
     }
     //------//
@@ -67,7 +67,7 @@ public class NoteTest extends TestCase {
       Note note = new Note();
       XMLToNote.parseNote(note, noteElement);
       assertEquals(4, note.getPitch().getOctave());
-      assertEquals(0, note.getPitch().getStep());
+      assertEquals("C", note.getPitch().getStep());
       assertEquals(0, note.getPitch().getAlter());
       assertNotNull(note.getGrace());
       assertEquals(note.getDuration(), 24);
@@ -92,6 +92,13 @@ public class NoteTest extends TestCase {
       noteElement.appendChild(articulationsElement);
       Element accentElement = document.createElement("accent");
       articulationsElement.appendChild(accentElement);
+      Element technicalsElement = document.createElement("technical");
+      notationsElement.appendChild(technicalsElement);
+      Element upbowElement = document.createElement("up-bow");
+      Element fingeringElement = document.createElement("fingering");
+      fingeringElement.appendChild(document.createTextNode("2"));
+      technicalsElement.appendChild(upbowElement);
+      technicalsElement.appendChild(fingeringElement);
       Note note = new Note();
       assertEquals(note.getTie(), false);
       assertEquals(note.getTied(), false);
@@ -99,7 +106,9 @@ public class NoteTest extends TestCase {
       assertTrue(note.getOrnaments().contains("turn"));
       assertTrue(note.getOrnaments().contains("delayedTurn"));
       assertFalse(note.getOrnaments().contains("unknown"));
-    assertTrue(note.getArticulations().contains("accent"));
+      assertTrue(note.getArticulations().contains("accent"));
+      assertTrue(note.getTechnical().contains("upBow"));
+      assertEquals(note.getFingering(), 2);
     }
     //-----------------//
     // checkRestParsing //

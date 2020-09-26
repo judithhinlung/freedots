@@ -206,10 +206,6 @@ public class Note {
   public void setMusicString(MusicString musicString) {
     this.musicString = musicString;
   }
-  Lyric lyric = null;
-  public Lyric getLyric() {
-    return this.lyric;
-  }
   boolean hasFermata = false;
   public boolean getFermata() {
     return this.hasFermata;
@@ -217,12 +213,23 @@ public class Note {
   public void setFermata(boolean fermata) {
     this.hasFermata = fermata;
   }
-  private ArrayList<Dynamic> dynamics = null;
-  public ArrayList<Dynamic> getDynamics() {
-    return this.dynamics;
+  private Dynamic dynamic = null;
+  public Dynamic getDynamic() {
+    return this.dynamic;
   }
-  public void addDynamic(Dynamic dynamic) {
-    dynamics.add(dynamic);
+  public void setDynamic(Dynamic dynamic) {
+    this.dynamic = dynamic;
+  }
+  private Arpeggiate arpeggiate = null;
+  public Arpeggiate getArpeggiate() {
+    return this.arpeggiate;
+  }
+  public void setArpeggiate(Arpeggiate arpeggiate) {
+    this.arpeggiate = arpeggiate;
+  }
+  Lyric lyric = null;
+  public Lyric getLyric() {
+    return this.lyric;
   }
   public void setLyric(Lyric lyric) {
     this.lyric = lyric;

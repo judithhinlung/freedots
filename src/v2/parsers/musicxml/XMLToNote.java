@@ -57,13 +57,10 @@ public class XMLToNote {
 	      }
     }
   }
-  private static int convertStep(String stepName) {
-    return "CDEFGAB".indexOf(stepName.trim().toUpperCase());
-  }
-  private static Pitch parsePitch(Element element) throws MusicXMLParseException {
-    int step = 0;
+    private static Pitch parsePitch(Element element) throws MusicXMLParseException {
     int octave = 0;
     int alter = 0;
+    String step = null;
     NodeList list = element.getChildNodes();
     boolean foundOctave = false;
     boolean foundStep = false;
@@ -80,8 +77,7 @@ public class XMLToNote {
           foundOctave = true;
         }
         else if (tag.equals("step")) {
-          String stepName = child.getTextContent();
-	  step = convertStep(stepName);
+          step = child.getTextContent();
           foundStep = true;
         }
       }
@@ -115,30 +111,29 @@ public class XMLToNote {
 	 }
   public static Unpitched parseUnpitched(Element element) {
     NodeList list = element.getChildNodes();
-	Unpitched unpitched = new Unpitched();
+    int octave = -1;
+    String step = null;
     for (int i = 0; i < list.getLength(); i++) {
       Node node = list.item(i);
       if (node.getNodeType() == Node.ELEMENT_NODE) {
         Element child = (Element)(list.item(i));
         String tag = child.getTagName();
         if (tag.equals("octave")) {
-          int octave = Integer.parseInt(child.getTextContent());
-	  unpitched.setDisplayOctave(octave);
+          octave = Integer.parseInt(child.getTextContent());
         }
         else if (tag.equals("step")) {
-          String stepName = child.getTextContent();
-	  int step = convertStep(stepName);
-	   unpitched.setDisplayStep(step);
+	    step = child.getTextContent();
         }
       }
     }
-    return unpitched;
+    return new Unpitched(octave, step);
   }
   public static Rest parseRest(Element element) {
-    Rest rest = new Rest();
+    String displayStep = null;
+    int displayOctave = -1;
+    boolean isMeasureRest = false;
     if (element.hasAttribute("measure")) {
-      boolean isMeasureRest = element.getAttribute("measure").equals("yes");
-      rest.setIsMeasureRest(isMeasureRest);
+      isMeasureRest = element.getAttribute("measure").equals("yes");
     }
     NodeList list = element.getChildNodes();
     for (int i = 0; i < list.getLength(); i++) {
@@ -147,16 +142,15 @@ public class XMLToNote {
         Element child = (Element)(list.item(i));
         String tag = child.getTagName();
         if (tag.equals("octave")) {
-          int octave = Integer.parseInt(child.getTextContent());
-	  rest.setDisplayOctave(octave);
+          displayOctave = Integer.parseInt(child.getTextContent());
         }
         else if (tag.equals("step")) {
-          String stepName = child.getTextContent();
-	  int step = convertStep(stepName);
-	   rest.setDisplayStep(step);
+	    displayStep = child.getTextContent();
         }
       }
     }
+    Rest rest = new Rest(displayOctave, displayStep);
+    rest.setIsMeasureRest(isMeasureRest);
     return rest;
   }
   public static int parseDuration(Element element) {
@@ -228,14 +222,17 @@ public class XMLToNote {
         else if (tag.equals("ornaments")) {
           parseOrnaments(note, child);
         }
-	else if (tag.equals("articulations")) {
-	    parseArticulations(note, element);
-	}
-	else if (tag.equals("fermata")) {
-	    note.setFermata(true);
-	}
-	else if (tag.equals("dynamics")) {
-	    parseDynamic(note, child);
+        else if (tag.equals("articulations")) {
+          parseArticulations(note, child);
+        }
+        else if (tag.equals("fermata")) {
+          note.setFermata(true);
+        }
+        else if (tag.equals("dynamics")) {
+          parseDynamic(note, child);
+        }
+      	else if (tag.equals("arpeggiate")) {
+	    note.setArpeggiate(parseArpeggiate(child));
 	}
       }
     }
@@ -409,20 +406,131 @@ public class XMLToNote {
       System.out.println("Invalid hole symbol: " + type);
     }
     return hole;
-  }
-  public static void parseDynamic(Note note, Element element) {
+  }  public static void parseDynamic(Note note, Element element) {
     NodeList list = element.getChildNodes();
     for (int i = 0; i < list.getLength(); i++) {
 	Element child = (Element)(list.item(i));
       String type = child.getTagName();
       try {
-       	note.addDynamic(new Dynamic(type));
+       	note.setDynamic(new Dynamic(type));
       }
       catch (IllegalArgumentException e) {
        	System.out.println("Unknown dynamic: " + type);
       }
     }
   }
+  public static Arpeggiate parseArpeggiate(Element element) {
+    if (element.hasAttribute("number") && element.hasAttribute("direction")) {
+      int num = Integer.parseInt(element.getAttribute("number"));
+      String dir = element.getAttribute("direction");
+      return new Arpeggiate(num, dir);
+   	}
+    return new Arpeggiate();
+  }
+  public static Lyric parseLyric(Element element) {
+    String text = null;
+    String syllabic = null;
+    boolean hasElision = false;
+    boolean isExtended = false;
+    NodeList list = element.getChildNodes();
+    for (int i = 0; i < list.getLength(); i++) {
+	    Element child = (Element)list.item(i);
+	    String tag = child.getTagName();
+	    if (tag.equals("text")) {
+	      text = child.getTextContent();
+	    }
+	    else if (tag.equals("syllabic")) {
+	      syllabic = child.getTextContent();
+	    }
+     else if (tag.equals("extended")) {
+       isExtended = true;
+	    }
+	    else if (tag.equals("elision")) {
+	      hasElision = true;
+	    }
+    }
+    if ((text != null && syllabic != null) && (isExtended && hasElision)) {
+      try {
+        return new Lyric(text, syllabic, hasElision, isExtended);
+      }
+      catch (IllegalArgumentException e) {
+        System.out.println("Invalid lyric arguments: " + text + ", " + syllabic + ", " + hasElision + ", " + isExtended);
+      }
+    }
+    else if (text != null && syllabic != null) {
+      try {
+	       return new Lyric(text, syllabic);
+      }
+      catch (IllegalArgumentException e) {
+        System.out.println("Invalid lyric arguments: " + text + ", " + syllabic);
+      }
+    }
+    else if (text != null) {
+      try {
+        return new Lyric(text);
+      }
+      catch (IllegalArgumentException e) {
+        System.out.println("Invalid lyric arguments: " + text);
+      }
+    }
+    return null;
+  }
+  public static FiguredBass parseFiguredBass(Element element) {
+    int duration = 0;
+    String prefix = null;
+    int number = 0;
+    String suffix = null;;
+    FiguredBass figuredBass = null;
+    if (element.hasAttribute("duration")) {
+      duration = Integer.parseInt(element.getAttribute("duration"));
+    }
+    Element figureElement = (Element)element.getElementsByTagName("figure").item(0);
+    NodeList list = figureElement.getChildNodes();
+    for (int i = 0; i < list.getLength(); i++) {
+	Element child = (Element)list.item(i);
+      String tag = child.getTagName();
+      if (tag.equals("prefix")) {
+        prefix = child.getTextContent();
+      }
+      else if (tag.equals("number")) {
+        number = Integer.parseInt(child.getTextContent());
+      }
+      else if (tag.equals("suffix")) {
+ 	      suffix = child.getTextContent();
+      }
+    }
+    if (prefix != null && number > 0 && suffix != null) {
+      try {
+        figuredBass = new FiguredBass(prefix, number, suffix);
+      }
+      catch (IllegalArgumentException e) {
+	  System.out.println("Invalid arguments: " + prefix + ", " + number + ", " + suffix);
+      }
+    }
+    else if (number > 0) {
+      try {
+	       figuredBass = new FiguredBass(number);
+      }
+      catch (IllegalArgumentException e) {
+	  System.out.println("Invalid argument: " + number);
+      }
+      if (prefix != null) {
+        try {
+          figuredBass.addPrefix(prefix);
+        }
+        catch(IllegalArgumentException e) {
+	    System.out.println("Invalid argument: " + prefix);
+        }
+      }
+      if (suffix != null) {
+        try {
+	  figuredBass.addSuffix(suffix);
+	}
+        catch (IllegalArgumentException e) {
+	    System.out.println("Invalid argument: " + suffix);
+        }
+      }
+    }
+    return figuredBass;
+  }
 }
-
-    

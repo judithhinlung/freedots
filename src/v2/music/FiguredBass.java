@@ -11,6 +11,7 @@ public class FiguredBass {
 * @param Suffix  value following the figured number, valid suffixes include all 
 * valid prefix and suffix symbols.
 */
+  int duration = 0;
   String prefix;
   int number;
   String suffix;
@@ -40,6 +41,9 @@ public class FiguredBass {
     }
     this.suffix = suffix;
   }
+  public void setDuration(int duration) {
+    this.duration = duration;
+  }
   public String getPrefix() {
     return this.prefix;
   }
@@ -48,6 +52,9 @@ public class FiguredBass {
   }
   public String getSuffix() {
     return this.suffix;
+  }
+  public int getDuration(int duration) {
+    return this.duration;
   }
   private String[] validPrefixes = new String[]{"plus", "sharp", "flat", "natural", "double-sharp", "flat-flat", "sharp-sharp"};
   private String[] validSuffixes = new String[]{"slash", "backslash", "vertical"};
