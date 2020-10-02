@@ -6,20 +6,33 @@ import freedots.math.PowerOfTwo;
 
 /** A wrapper around (the most important) note element.
  */
-public class Note {
-  public Note() {
+public class Note implements MeasureElement {
+  Measure measure;
+  public Note(Measure measure) {
+    this.measure = measure;
   }
-    /**
-    public Note(int divisions, int durationMultiplier, Transpose transpose, Part part) {
-    this.divisions = divisions;
-    this.durationMultiplier = durationMultiplier;
-    this.transpose = transpose;
-    this.part = part;
+  public Measure getMeasure() {
+    return this.measure;
   }
-    */
+  String type;
+  public String getType() {
+    return this.type;
+  }
+  public void setType(String type) throws IllegalArgumentException {
+    String[] availableTypes = new String[]{"1024th", "512th", "256th", "128th", "64th", "32nd", "16th", "eighth", "quarter", "half", "whole", "breve", "long", "maxima"};
+    if (!Utils.contains(type, availableTypes)) {
+       throw new IllegalArgumentException("Invalid note type: " + type);
+    }
+    this.type = type;
+  }
+  int duration = 0;
+  public int getDuration() {
+    return this.duration;
+  }
+  public void setDuration(int duration) {
+    this.duration = duration;
+  }
 
-  private final int divisions = 1;
-  private final int durationMultiplier = 1;
   private boolean pizzicato = false;
   public boolean getPizzicato() {
     return this.pizzicato;
@@ -55,13 +68,6 @@ public class Note {
   public void setRest(Rest rest) {
     this.rest = rest;
   }
-  private int duration = 0;
-  public int getDuration() {
-    return this.duration;
-  }
-  public void setDuration(int duration) {
-    this.duration = duration;
-  }
   private TimeModification timeModification;
   public TimeModification getTimeModification() {
     return this.timeModification;
@@ -96,17 +102,6 @@ public class Note {
   }
   public void setInstrumentId(String id) {
     this.instrumentId = id;
-  }
-  private String type;
-  public String getType() {
-	return this.type;
-  }
-  public void setType(String type) throws IllegalArgumentException {
-    String[] availableTypes = new String[]{"1024th", "512th", "256th", "128th", "64th", "32nd", "16th", "eighth", "quarter", "half", "whole", "breve", "long", "maxima"};
-    if (!Utils.contains(type, availableTypes)) {
-       throw new IllegalArgumentException("Invalid note type: " + type);
-    }
-    this.type = type;
   }
   private boolean isDotted = false;
   public boolean getDotted() {
@@ -242,80 +237,40 @@ public class Note {
     this.figuredBass = figuredBass;
   }
   int backup = 0;
-  int forward = 0;
-    /**    private Part part;
-    public Part getPart() { return part; }
-
-    private Fraction moment;
-    private Staff staff = null;
-    private Unpitched unpitched = null;
-    private int duration = 0;
-    private boolean isChordNote = false;
-    private boolean isTieStart = false;
-    private boolean isTieStop = false;
-    private String instrumentId = null;
-    private String type = null;
-    private int staffNumber = 0;
-    private String voiceName = null;
-    private Accidental accidental = null;
-    private TimeModification timeModification = null;
-    public TimeModification getTimeModification() { return timeModification; }
-    private Lyric lyric = null;
-    private Notations notations = null;
-    private Tuplet tuplet = null;
-    public Tuplet getTuplet() { return this.tuplet; }
-    void addTuplet(Tuplet tuplet) { this.tuplet = tuplet; }
-
-    private Attributes.Transpose transpose = null;
-    private boolean grace = false;
-    private boolean rest = false;
-    private boolean glisandoStart = false;
-    private boolean glisandoStop = false;
-    private boolean slideStart = false;
-    private boolean slideStop = false;
-    void setMoment(final Fraction moment) { this.moment = moment; }
-
-    public boolean isGrace() {
-	return this.grace;
+  public int getBackup() {
+    return this.backup;
+  }
+  public void setBackup(int backup) {
+    this.backup = backup;
+  }
+  Forward forward = null;
+  public Forward getForward() {
+    return this.forward;
+  }
+  public void setForward(Forward forward) {
+    this.forward = forward;
+  }
+  public static class Forward {
+    int duration = 0;
+    int staff = 1;
+    int voice = 1;
+    public Forward(int duration) {
+      this.duration = duration;
     }
-    public boolean isRest() {
-	return this.rest;
+    public int getDuration() {
+      return this.duration;
     }
-    public Pitch getPitch() {
-      return this.pitch;
+    public int getStaff() {
+      return this.staff;
     }
-    public Unpitched getUnpitched() {
-      return this.unpitched;
+    public void setStaff(int staff) {
+      this.staff = staff;
     }
-    public int getStaffNumber() {
-	return this.staffNumber;
+    public int getVoice() {
+      return this.voice;
     }
-    public String getVoiceName() {
-	return this.voiceName;
+    public void setVoice(int voice) {
+      this.voice = voice;
     }
-    public void setVoiceName(String name) {
-	this.voiceName = name;
-    }
-
-    public Accidental getAccidental() {
-	return this.accidental;
-    }
-    void setAccidental(Accidental accidental) {
-	this.accidental = accidental;
-    }
-
-    public boolean isTieStart() {
-        // TODO
-	    return false;
-    }
-    public Set<Articulation>  articulations;
-    public Set<Articulation> getArticulations() {
-      return this.articulations;
-    }
-
-    public Set<Ornament> ornaments;
-    public Set<Ornament> getOrnaments() {
-      return this.ornaments;
-    }
-    */
+  }
 }

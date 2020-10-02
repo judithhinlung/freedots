@@ -63,8 +63,8 @@ public class NoteTest extends TestCase {
       Element instrumentElement = document.createElement("instrument");
       instrumentElement.setAttribute("id", "1");
       noteElement.appendChild(instrumentElement);
-
-      Note note = new Note();
+      Measure measure = new Measure(1);
+      Note note = new Note(measure);
       XMLToNote.parseNote(note, noteElement);
       assertEquals(4, note.getPitch().getOctave());
       assertEquals("C", note.getPitch().getStep());
@@ -99,7 +99,8 @@ public class NoteTest extends TestCase {
       fingeringElement.appendChild(document.createTextNode("2"));
       technicalsElement.appendChild(upbowElement);
       technicalsElement.appendChild(fingeringElement);
-      Note note = new Note();
+      Measure measure = new Measure(1);
+      Note note = new Note(measure);
       assertEquals(note.getTie(), false);
       assertEquals(note.getTied(), false);
       assertEquals(note.getSlur(), true);
@@ -119,8 +120,9 @@ public class NoteTest extends TestCase {
     Element restElement = document.createElement("rest");
     restElement.setAttribute("measure", "yes");
     noteElement.appendChild(restElement);
-    Note restNote = new Note();
-    XMLToNote.parseNote(restNote, noteElement);
+      Measure measure = new Measure(1);
+      Note restNote = new Note(measure);
+      XMLToNote.parseNote(restNote, noteElement);
     assertNotNull(restNote.getRest());
     assertTrue(restNote.getRest().getIsMeasureRest());
   }

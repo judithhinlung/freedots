@@ -52,10 +52,22 @@ public class XMLToNote {
 	    note.setAccidental(parseAccidental(child));
 	}
 		else if (tag.equals("notations")) {
-		    parseNotations(note, child);
+      parseNotations(note, child);
 		}
-	      }
+      else if (tag.equals("lyric")) {
+        note.setLyric(parseLyric(child));
+      }
+      else if (tag.equals("figured-bass")) {
+        note.setFiguredBass(parseFiguredBass(child));
+      }
+      else if (tag.equals("backup")) {
+        note.setBackup(parseBackup(child));
+      }
+      else if (tag.equals("forward")) {
+        note.setForward(parseForward(child));
+      }
     }
+  }
   }
     private static Pitch parsePitch(Element element) throws MusicXMLParseException {
     int octave = 0;
@@ -532,5 +544,37 @@ public class XMLToNote {
       }
     }
     return figuredBass;
+  }
+  public static int parseBackup(Element element) {
+    int duration = 0;
+    NodeList list = element.getElementsByTagName("duration");
+    if (list.getLength() == 1) {
+      duration = Integer.parseInt(element.getElementsByTagName("duration").item(0).getTextContent());
+    }
+    return duration;
+  }
+  public static Note.Forward parseForward(Element element) {
+    int duration = 0;
+    int staff = 0;
+    int voice = 0;
+    NodeList list = element.getElementsByTagName("duration");
+    if (list.getLength() == 1) {
+      duration = Integer.parseInt(list.item(0).getTextContent());
+    }
+    list = element.getElementsByTagName("staff");
+    if (list.getLength() == 1) {
+      staff = Integer.parseInt(list.item(0).getTextContent());
+    }
+    list = element.getElementsByTagName("voice");
+    if (list.getLength() == 1) {
+      staff = Integer.parseInt(list.item(0).getTextContent());
+    }
+    if (duration == 0) {
+      return null;
+    }
+    Note.Forward forward = new Note.Forward(duration);
+    forward.setStaff(staff);
+    forward.setVoice(voice);
+    return forward;
   }
 }
