@@ -1,5 +1,5 @@
 package v2.music;
-public class TextDirection implements Event {
+public class TextDirection  {
   private String text;
   private Part part;
   public TextDirection(String text, Part part) {

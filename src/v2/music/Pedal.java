@@ -1,5 +1,5 @@
 package v2.music;
-public class Pedal implements Event {
+public class Pedal  {
   String type;
   Part part;
   public Pedal(String type, Part part) throws IllegalArgumentException {
