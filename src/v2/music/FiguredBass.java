@@ -3,7 +3,7 @@ package v2.music;
 * A figured bass element takes its position from the first regular note.
 * Figures are ordered from top to bottom.
 */
-public class FiguredBass {
+public class FiguredBass extends MeasureElement {
 /**
 * @param duration  optional, indicates changes of figures under the note
 * @param number  figure number 
@@ -15,7 +15,8 @@ public class FiguredBass {
   String prefix;
   int number;
   String suffix;
-  public FiguredBass(String prefix, int number, String suffix) throws IllegalArgumentException {
+  public FiguredBass(Measure measure, String prefix, int number, String suffix) throws IllegalArgumentException {
+    super(measure);
     if (Utils.contains(prefix, validPrefixes)) {
       throw new IllegalArgumentException("Invalid figured bass prefix: " + prefix);
     }
@@ -26,7 +27,8 @@ public class FiguredBass {
     this.prefix = prefix;
     this.suffix = suffix;
   }
-  public FiguredBass(int number) {
+  public FiguredBass(Measure measure, int number) {
+    super(measure);
     this.number = number;
   }
   public void addPrefix(String prefix) throws IllegalArgumentException {

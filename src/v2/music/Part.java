@@ -24,12 +24,21 @@ public class Part {
   public void setAbbreviation(String abbreviation) {
     this.partAbbreviation = abbreviation;
   }
-  Instrument instrument;
-  public Instrument getInstrument() {
-    return this.instrument;
+  ArrayList<Instrument> instruments;
+  public ArrayList<Instrument> getInstruments() {
+    return this.instruments;
   }
-  public void setInstrument(Instrument instrument) {
-    this.instrument = instrument;
+  public Instrument getInstrument(String id) {
+    for (int i = 0; i < instruments.size(); i++) {
+      Instrument current = instruments.get(i);
+      if (current.getId().equals(id)) {
+        return current;
+      }
+    }
+    return null;
+  }
+  public void addInstrument(Instrument instrument) {
+    this.instruments.add(instrument);
   }
   HashMap<Integer, KeySignature> keysMap = new HashMap<Integer, KeySignature>();
   public KeySignature getCurrentKey(int measureNumber) {
@@ -83,10 +92,34 @@ public class Part {
   public void setStaves(int staves) {
     this.staves = staves;
   }
+  ArrayList<Clef> clefs = new ArrayList<Clef>();
+  public ArrayList<Clef> getClefs() {
+    return this.clefs;
+  }
+  public void addClef(Clef clef) {
+    clefs.add(clef);
+  }
+
   ArrayList<Measure> measures = new ArrayList<Measure>();
-  /**
-   TODO: Music data: 	"(note | backup | forward | direction | attributes |
-	  harmony | figured-bass | print | sound | barline | 
-	  grouping | link | bookmark)*">
-  */
+  public Measure getMeasure(int num) {
+    for (int i = 0; i < this.measures.size(); i++) {
+      Measure current =  measures.get(i);
+      if (current.getNumber() == num) {
+        return current;
+      }
+    }
+    return null;
+  }
+  public void addMeasure(Measure measure) {
+    if (measure.keySignature != null) {
+      this.addKeySignature(measure.getNumber(), measure.getKey());
+    }
+    if (measure.timeSignature != null) {
+      this.addTimeSignature(measure.getNumber(), measure.getTime());
+    }
+    if (measure.divisions != 0) {
+      this.addDivisions(measure.getNumber(), measure.divisions);
+    }
+    measures.add(measure);
+  }
 }

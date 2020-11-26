@@ -4,4 +4,7 @@ public class KeySignature {
   public KeySignature(int type) {
     this.type = type;
   }
+  public int getType() {
+    return this.type;
+  }
 }

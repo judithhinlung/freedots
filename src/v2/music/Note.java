@@ -1,18 +1,22 @@
 package v2.music;
 import java.util.ArrayList;
-import freedots.math.AbstractFraction;
+import java.util.HashMap;
 import freedots.math.Fraction;
-import freedots.math.PowerOfTwo;
 
 /** A wrapper around (the most important) note element.
  */
-public class Note implements MeasureElement {
-  Measure measure;
+public class Note extends MeasureElement {
   public Note(Measure measure) {
-    this.measure = measure;
+    super(measure);
+    this.staff = 1;
+    this.voice = 1;
   }
-  public Measure getMeasure() {
-    return this.measure;
+  Pitch pitch;
+  public Pitch getPitch() {
+    return this.pitch;
+  }
+  public void setPitch(Pitch pitch) {
+    this.pitch = pitch;
   }
   String type;
   public String getType() {
@@ -25,27 +29,57 @@ public class Note implements MeasureElement {
     }
     this.type = type;
   }
-  int duration = 0;
-  public int getDuration() {
+  Fraction duration;
+  /** Returns the relative duration for this note.
+   */
+  public Fraction getDuration() {
     return this.duration;
   }
-  public void setDuration(int duration) {
+  public void setDuration(Fraction duration) {
     this.duration = duration;
   }
-
+  public Fraction getDurationFromType(String type) {
+    HashMap<String, Fraction> typesToDurations = new HashMap<String, Fraction>();
+    typesToDurations.put("1024th", new Fraction(1, 1024));
+    typesToDurations.put("512th", new Fraction(1, 512));
+    typesToDurations.put("256th", new Fraction(1, 256));
+    typesToDurations.put("128th", new Fraction(1, 128));
+    typesToDurations.put("64th", new Fraction(1, 64));
+    typesToDurations.put("32nd", new Fraction(1, 32));
+    typesToDurations.put("16th", new Fraction(1, 16));
+    typesToDurations.put("eighth", new Fraction(1, 8));
+    typesToDurations.put("quarter", new Fraction(1, 4));
+    typesToDurations.put("half", new Fraction(1, 2));
+    typesToDurations.put("whole", new Fraction(1, 1));
+    typesToDurations.put("breve", new Fraction(2, 1));
+    typesToDurations.put("long", new Fraction(4, 1));
+    typesToDurations.put("maxima", new Fraction(0, 1));
+    return typesToDurations.get(type);
+  }
+  public String getTypeFromDuration(Fraction duration) {
+    HashMap<Fraction, String> durationsToTypes = new HashMap<Fraction, String>();
+    durationsToTypes.put(new Fraction(1, 1024), "1024th");
+    durationsToTypes.put(new Fraction(1, 512), "512th");
+    durationsToTypes.put(new Fraction(1, 256), "256th");
+    durationsToTypes.put(new Fraction(1, 128), "128th");
+    durationsToTypes.put(new Fraction(1, 64), "64th");
+    durationsToTypes.put(new Fraction(1, 32), "32nd");
+    durationsToTypes.put(new Fraction(1, 16), "16th");
+    durationsToTypes.put(new Fraction(1, 8), "eighth");
+    durationsToTypes.put(new Fraction(1, 4), "quarter");
+    durationsToTypes.put(new Fraction(1, 2), "half");
+    durationsToTypes.put(new Fraction(1, 1), "whole");
+    durationsToTypes.put(new Fraction(2, 1), "breve");
+    durationsToTypes.put(new Fraction(4, 1), "long");
+    durationsToTypes.put(new Fraction(0, 1), "maxima");
+    return durationsToTypes.get(duration);
+  }
   private boolean pizzicato = false;
   public boolean getPizzicato() {
     return this.pizzicato;
   }
   public void setPizzicato(boolean pizz) {
     this.pizzicato = pizz;
-  }
-  private Pitch pitch = null;
-  public Pitch getPitch() {
-    return this.pitch;
-  }
-  public void setPitch(Pitch pitch) {
-    this.pitch = pitch;
   }
   private Grace grace = null;
   public Grace getGrace() {
@@ -228,49 +262,5 @@ public class Note implements MeasureElement {
   }
   public void setLyric(Lyric lyric) {
     this.lyric = lyric;
-  }
-  FiguredBass figuredBass = null;
-  public FiguredBass getFiguredBass() {
-    return this.figuredBass;
-  }
-  public void setFiguredBass(FiguredBass figuredBass) {
-    this.figuredBass = figuredBass;
-  }
-  int backup = 0;
-  public int getBackup() {
-    return this.backup;
-  }
-  public void setBackup(int backup) {
-    this.backup = backup;
-  }
-  Forward forward = null;
-  public Forward getForward() {
-    return this.forward;
-  }
-  public void setForward(Forward forward) {
-    this.forward = forward;
-  }
-  public static class Forward {
-    int duration = 0;
-    int staff = 1;
-    int voice = 1;
-    public Forward(int duration) {
-      this.duration = duration;
-    }
-    public int getDuration() {
-      return this.duration;
-    }
-    public int getStaff() {
-      return this.staff;
-    }
-    public void setStaff(int staff) {
-      this.staff = staff;
-    }
-    public int getVoice() {
-      return this.voice;
-    }
-    public void setVoice(int voice) {
-      this.voice = voice;
-    }
   }
 }

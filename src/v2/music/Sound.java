@@ -1,15 +1,22 @@
 package v2.music;
-public class Sound {
-  /** Decapo, segno, dalsegno, coda, and tocoda indicate backward or forward jumps in playback;
+import freedots.math.Fraction;
+public class Sound extends MeasureElement {
+  /** Decapo, segno, dalsegno, coda, and tocoda indicate backward or forward jumps in 
+   * playback.
    * 0  no jump
    * 1  jump occurs this time through
    * n  play through n-1 times before making the jump
    */
+  Measure measure = null;
+  public Sound(Measure measure) {
+    super(measure);
+  }
   Instrument instrument = null;
-  int division;
-  public Sound(Instrument instrument, int division) {
+  public Instrument getInstrument() {
+    return this.instrument;
+  }
+  public void setInstrument(Instrument instrument) {
     this.instrument = instrument;
-    this.division = division;
   }
   int velocity = 100;
   public int getVelocity() {
@@ -25,12 +32,12 @@ public class Sound {
   public void setTempo(int tempo) {
     this.tempo = tempo;
   }
-  int decapo = 0;
-  public int getDecapo() {
-    return this.decapo;
+  int dacapo = 0;
+  public int getDacapo() {
+    return this.dacapo;
   }
-  public void setDecapo(int decapo) {
-    this.decapo = decapo;
+  public void setDacapo(int dacapo) {
+    this.dacapo = dacapo;
   }
   int segno = 0;
   public int getSegno() {
@@ -87,5 +94,12 @@ public class Sound {
   }
   public void setPedalPress(int press) {
     this.pedalPress = press;
+  }
+  Fraction offset = Fraction.ZERO;
+  public Fraction getOffset() {
+    return this.offset;
+  }
+  public void setOffset(Fraction offset) {
+    this.offset = offset;
   }
 }

@@ -1,15 +1,12 @@
 package v2.music;
-public class TextDirection  {
-  private String text;
-  private Part part;
-  public TextDirection(String text, Part part) {
-    this.text = text;
-    this.part = part;
+public class TextDirection extends MeasureElement {
+  Measure measure;
+  String text;
+  public TextDirection(Measure measure, String text) {
+    super(measure);
+    this.text = text;    this.text = text;
   }
   public String getText() {
     return this.text;
-  }
-  public Part getPart() {
-    return this.part;
   }
 }

@@ -1,19 +1,16 @@
 package v2.music;
-public class Pedal  {
+public class Pedal extends MeasureElement {
+  Measure measure;
   String type;
-  Part part;
-  public Pedal(String type, Part part) throws IllegalArgumentException {
+  public Pedal(Measure measure, String type) throws IllegalArgumentException {
+    super(measure);
     if (!Utils.contains(type, validTypes)) {
       throw new IllegalArgumentException("Invalid pedal type: " + type);
     }
     this.type = type;
-    this.part = part;
   }
   public String getType() {
     return this.type;
-  }
-  public Part getPart() {
-    return this.part;
   }
   private String[] validTypes = new String[]{"start", "stop", "sostenuto", "continue", "change"};
 }

@@ -67,7 +67,7 @@ public abstract class AbstractFraction
    *      Wikipedia: Greatest common divisor</a>
    */
   public int greatestCommonDivisor() { return gcd(numerator(), denominator()); }
-
+  
   /** Returns the multiplicative inverse of a fraction.
    * @see <a href="http://en.wikipedia.org/wiki/Multiplicative_inverse">
    *      Wikipedia: Multiplicative inverse</a>
@@ -75,6 +75,7 @@ public abstract class AbstractFraction
   public Fraction reciprocal() {
     return new Fraction(denominator(), numerator());
   }
+
   /** Inverts the sign of a fraction.
    */
   public Fraction negate() {
@@ -106,6 +107,12 @@ public abstract class AbstractFraction
     return new Fraction(numerator(), denominator()*other).simplify();
   }
 
+  /** Returns the least common multiple of two fractions.
+   */
+  public int getLeastCommonMultiple(Fraction other) {
+    return lcm(this.denominator(), other.denominator());
+  }
+
   @Override public String toString() {
     if (denominator() == 1) return String.valueOf(numerator());
     return String.valueOf(numerator()) + "/" + denominator();
@@ -113,6 +120,9 @@ public abstract class AbstractFraction
 
   private static int gcd(final int a, final int b) {
     return b == 0? a: gcd(b, a%b);
+  }
+  private static int lcm(final int a, final int b) {
+    return (a*b)/(gcd(a, b));
   }
 }
 

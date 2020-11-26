@@ -3,7 +3,7 @@ public class TimeModification {
   int normalNotes;
   int actualNotes;
   String normalType;
-  public TimeModification(int normalNotes, int ActualNotes) {
+  public TimeModification(int normalNotes, int actualNotes) {
     this.normalNotes = normalNotes;
     this.actualNotes = actualNotes;
     this.normalType = null;

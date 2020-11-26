@@ -3,7 +3,7 @@ public class Clef {
   String sign;
   int line = 0;
   int clefOctaveChange = 0;
-  Staff staff;
+  int staffNumber = 0;
   public Clef(String sign) {
     this.sign = sign;
   }
@@ -17,11 +17,11 @@ public class Clef {
   public int getLine() {
     return this.line;
   }
-  public void setStaff(Staff staff) {
-    this.staff = staff;
+  public int getStaffNumber() {
+    return this.staffNumber;
   }
-  public Staff getStaff() {
-    return this.staff;
+  public void setStaffNumber(int number) {
+    this.staffNumber = number;
   }
   int octaveChange = 0;
   public int getOctaveChange() {

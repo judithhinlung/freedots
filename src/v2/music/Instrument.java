@@ -1,10 +1,18 @@
 package v2.music;
 public class Instrument {
-  String instrumentName;
   String instrumentId;
-  public Instrument(String name, String id) {
-    this.instrumentName = name;
+  public Instrument(String id) {
     this.instrumentId = id;
+  }
+  public String getId() {
+    return this.instrumentId;
+  }
+  String instrumentName;
+  public String getName() {
+    return this.instrumentName;
+  }
+  public void setName(String name) {
+    this.instrumentName = name;
   }
   String instrumentSound;
   public String getInstrumentSound() {
@@ -13,83 +21,39 @@ public class Instrument {
   public void setInstrumentSound(String sound) {
     this.instrumentSound = sound;
   }
-  VirtualInstrument virtualInstrument = null;
-  public VirtualInstrument getVirtualInstrument() {
-    return this.virtualInstrument;
+  int midiChannel = 0;
+  public int getMidiChannel() {
+    return this.midiChannel;
   }
-  public static class VirtualInstrument {
-    String virtualName;
-    String virtualLibrary;
-    public VirtualInstrument(String name, String library) {
-      this.virtualName = name;
-      this.virtualLibrary = library;
-    }
-    public String getVirtualName() {
-      return this.virtualName;
-    }
-    public String getVirtualLibrary() {
-      return this.virtualLibrary;
-    }
+  public void setMidiChannel(int channel) {
+    this.midiChannel = channel;
   }
-  MidiInstrument midiInstrument = null;
-  public MidiInstrument getMidiInstrument() {
-    return this.midiInstrument;
+  int midiProgram = 0;
+  public int getMidiProgram() {
+    return this.midiProgram;
   }
-  public void setMidiInstrument(MidiInstrument midiInstrument) {
-    this.midiInstrument = midiInstrument;
+  public void setMidiProgram(int program) {
+    this.midiProgram = program;
   }
-  public static class MidiInstrument {
-    String instrumentId;
-    int midiChannel;
-    int midiProgram;
-    int midiBank;
-    int volume;
-    int pan;
-    int elevation;
-    public MidiInstrument(String id) {
-      this.instrumentId = id;
-      this.midiChannel = 0;
-      this.midiProgram = 0;
-      this.midiBank = 1;
-      this.volume = 50;
-      this.pan = 0;
-      this.elevation = 0;
-    }
-    public int getMidiChannel() {
-      return this.midiChannel;
-    }
-    public void setMidiChannel(int channel) {
-      this.midiChannel = channel;
-    }
-    public int getMidiProgram() {
-      return this.midiProgram;
-    }
-    public void setMidiProgram(int program) {
-      this.midiProgram = program;
-    }
-    public int getMidiBank() {
-      return this.midiBank;
-    }
-    public void setMidiBank(int bank) {
-      this.midiBank = bank;
-   }
-    public int getVolume() {
-      return this.volume;
-    }
-    public void setVolume(int volume) {
-      this.volume = volume;
-    }
-    public int getPan() {
-      return this.pan;
-    }
-    public void setPan(int pan) {
-      this.pan = pan;
-    }
-    public int getElevation() {
-      return this.elevation;
-    }
-    public int setElevation(int elevation) {
-      return this.elevation;
-    }
+  int volume = 100;
+  public int getVolume() {
+    return this.volume;
+  }
+  public void setVolume(int volume) {
+    this.volume = volume;
+  }
+  int pan = 64;
+  public int getPan() {
+    return this.pan;
+  }
+  public void setPan(int pan) {
+    this.pan = pan;
+  }
+  int elevation = 0;
+  public int getElevation() {
+    return this.elevation;
+  }
+  public int setElevation(int elevation) {
+    return this.elevation;
   }
 }
