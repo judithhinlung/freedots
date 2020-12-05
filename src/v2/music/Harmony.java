@@ -1,16 +1,19 @@
 package v2.music;
-public class Harmony {
+public class Harmony extends MeasureElement {
+  Measure measure;
   Root root;
   Bass bass;
   String kind;
-  public Harmony(Root root, String kind) throws IllegalArgumentException {
+  public Harmony(Measure measure, Root root, String kind) throws IllegalArgumentException {
+    super(measure);
     if (!Utils.contains(kind, validKinds)) {
       throw new IllegalArgumentException("Invalid harmony type: " + kind);
     }
     this.root = root;
     this.kind = kind;
   }
-  public Harmony(Bass bass, String kind) throws IllegalArgumentException {
+  public Harmony(Measure measure, Bass bass, String kind) throws IllegalArgumentException {
+    super(measure);
     if (!Utils.contains(kind, validKinds)) {
       throw new IllegalArgumentException("Invalid harmony type: " + kind);
     }

@@ -1,27 +1,20 @@
 package v2.music;
 public class Transpose {
-  String step;
-  String diatonicPitch;
-  int chromatic = 0;
+  int chromaticStep = 0;
+  int diatonicPitch = 0;
   int octaveChange = 0;
   int staffNumber = 0;
-  public Transpose(String step) {
-    this.step = step;
+  public Transpose(int chromaticStep) {
+    this.chromaticStep = chromaticStep;
   }
-  public String getStep() {
-    return this.step;
+  public int getChromaticStep() {
+    return this.chromaticStep;
   }
-  public String getDiatonicPitch() {
+  public int getDiatonicPitch() {
     return this.diatonicPitch;
   }
-  public void setDiatonicPitch(String pitch) {
-    this.diatonicPitch = pitch;
-  }
-  public int getChromatic() {
-    return this.chromatic;
-  }
-  public void setChromatic(int chromatic) {
-    this.chromatic = chromatic;
+  public void setDiatonicPitch(int diatonicPitch) {
+    this.diatonicPitch = diatonicPitch;
   }
   public int getOctaveChange() {
     return this.octaveChange;
@@ -34,5 +27,12 @@ public class Transpose {
   }
   public void setStaffNumber(int number) {
     this.staffNumber = number;
+  }
+  boolean doubling = false;
+  public boolean getDoubling() {
+    return this.doubling;
+  }
+  public void setDoubling(boolean doubling) {
+    this.doubling = doubling;
   }
 }

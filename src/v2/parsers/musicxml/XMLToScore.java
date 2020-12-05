@@ -356,6 +356,9 @@ public class XMLToScore {
           FiguredBass figuredBass = parseFiguredBass(measure, child);
           measure.addElement(figuredBass);
         }
+        else if (tag.equals("harmony")) {
+          parseHarmony(measure, child);
+        }
         else if (tag.equals("sound")) {
           parseSound(measure, child);
         }
@@ -364,8 +367,7 @@ public class XMLToScore {
     part.addMeasure(measure);
   }
   /**
-   TODO: Music data: 	"(attributes |
-	  harmony | figured-bass | print | sound | barline | 
+   TODO: Music data: 	"harmony | barline | 
 	  grouping | link | bookmark)*">
   */
 
@@ -391,6 +393,9 @@ public class XMLToScore {
         }
         else if (tag.equals("clef")) {
           parseClef(measure, child);
+        }
+        else if (tag.equals("transpose")) {
+          parseTranspose(measure, child);
         }
       }
     }
@@ -1179,5 +1184,41 @@ public class XMLToScore {
     }
     Part part = measure.getPart();
     part.addClef(clef);
+  }
+  public static void parseTranspose(Measure measure, Element element) throws MusicXMLParseException {
+    if (element.getElementsByTagName("chromatic").getLength() == 0) {
+      throw new MusicXMLParseException("Missingchromatic step in transpose element");
+    }
+    int chromaticStep = Integer.parseInt(element.getElementsByTagName("chromatic").item(0).getTextContent());
+    Transpose transpose = new Transpose(chromaticStep);
+    if (element.hasAttribute("number")) {
+      transpose.setStaffNumber(Integer.parseInt(element.getAttribute("number")));
+    }
+    for (Node node = element.getFirstChild(); node != null;
+      node = node.getNextSibling()) {
+      if (node.getNodeType() == Node.ELEMENT_NODE) {
+        Element child = (Element)node;
+        String tag = child.getTagName();
+        if (tag.equals("diatonic")) {
+          int diatonicPitch = Integer.parseInt(child.getTextContent());
+          transpose.setDiatonicPitch(diatonicPitch);
+        }
+        else if (tag.equals("octave-change")) {
+          int octaveChange = Integer.parseInt(child.getTextContent());
+          transpose.setOctaveChange(octaveChange);
+        }
+        else if (tag.equals("doubling")) {
+          String doubling = child.getTextContent();
+          if (doubling.equals("yes")) {
+            transpose.setDoubling(true);
+          }
+        }
+      }
+    }
+  }
+  public static void parseHarmony(Measure measure, Element element) {
+    Pitch root = null;
+    String kind = null;
+    Pitch bass = null;
   }
 }
