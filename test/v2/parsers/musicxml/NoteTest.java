@@ -68,7 +68,7 @@ public class NoteTest extends TestCase {
       Note note = new Note(measure);
       XMLToScore.parseNote(note, noteElement);
       assertEquals(4, note.getPitch().getOctave());
-      assertEquals("C", note.getPitch().getStep());
+      assertEquals(0, note.getPitch().getStep());
       assertEquals(0, note.getPitch().getAlter());
       assertNotNull(note.getGrace());
       assertEquals(note.getDuration(), 24);
@@ -124,8 +124,8 @@ public class NoteTest extends TestCase {
     noteElement.appendChild(restElement);
     Part part = new Part("p1");
     Measure measure = new Measure(part, 1);
-      Note restNote = new Note(measure);
-      XMLToNote.parseNote(restNote, noteElement);
+    Note restNote = new Note(measure);
+    XMLToScore.parseNote(restNote, noteElement);
     assertNotNull(restNote.getRest());
     assertTrue(restNote.getRest().getIsMeasureRest());
   }

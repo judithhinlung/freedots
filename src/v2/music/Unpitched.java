@@ -1,19 +1,19 @@
 package v2.music;
 public class Unpitched {
-  String displayStep;
+  int displayStep;
   int displayOctave;
   public Unpitched() {
-    this.displayStep = null;
-    this.displayOctave = -1;
+    this.displayStep = 0;
+    this.displayOctave = 0;
   }
-  public Unpitched(int octave, String displayStep) {
+  public Unpitched(int octave, int displayStep) {
     this.displayOctave = displayOctave;
     this.displayStep = displayStep;
   }
   public int getDisplayOctave() {
     return this.displayOctave;
   }
-  public String getDisplayStep() {
+  public int getDisplayStep() {
     return this.displayStep;
   }
 }

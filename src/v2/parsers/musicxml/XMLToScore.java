@@ -481,10 +481,13 @@ public class XMLToScore {
       }
     }
   }
+  public static int convertStep(String step) {
+    return "CDEFGAB".indexOf(step.trim().toUpperCase());
+  }
   private static Pitch parsePitch(Element element) throws MusicXMLParseException {
     int octave = 0;
     int alter = 0;
-    String step = null;
+    int step = 0;
     NodeList list = element.getChildNodes();
     boolean foundOctave = false;
     boolean foundStep = false;
@@ -501,7 +504,7 @@ public class XMLToScore {
           foundOctave = true;
         }
         else if (tag.equals("step")) {
-          step = child.getTextContent();
+          step = convertStep(child.getTextContent());
           foundStep = true;
         }
       }
@@ -565,7 +568,7 @@ public class XMLToScore {
   public static Unpitched parseUnpitched(Element element) {
     NodeList list = element.getChildNodes();
     int octave = -1;
-    String step = null;
+    int step = 0;
     for (int i = 0; i < list.getLength(); i++) {
       Node node = list.item(i);
       if (node.getNodeType() == Node.ELEMENT_NODE) {
@@ -575,15 +578,15 @@ public class XMLToScore {
           octave = Integer.parseInt(child.getTextContent());
         }
         else if (tag.equals("step")) {
-	    step = child.getTextContent();
+          step = convertStep(child.getTextContent());
         }
       }
     }
     return new Unpitched(octave, step);
   }
   public static Rest parseRest(Element element) {
-    String displayStep = null;
-    int displayOctave = -1;
+    int displayOctave = 0;
+    int displayStep = 0;
     boolean isMeasureRest = false;
     if (element.hasAttribute("measure")) {
       isMeasureRest = element.getAttribute("measure").equals("yes");
@@ -598,7 +601,7 @@ public class XMLToScore {
           displayOctave = Integer.parseInt(child.getTextContent());
         }
         else if (tag.equals("step")) {
-	    displayStep = child.getTextContent();
+          displayStep = convertStep(child.getTextContent());
         }
       }
     }
@@ -1189,8 +1192,8 @@ public class XMLToScore {
     if (element.getElementsByTagName("chromatic").getLength() == 0) {
       throw new MusicXMLParseException("Missingchromatic step in transpose element");
     }
-    int chromaticStep = Integer.parseInt(element.getElementsByTagName("chromatic").item(0).getTextContent());
-    Transpose transpose = new Transpose(chromaticStep);
+    int step = Integer.parseInt(element.getElementsByTagName("chromatic").item(0).getTextContent());
+    Transpose transpose = new Transpose(step);
     if (element.hasAttribute("number")) {
       transpose.setStaffNumber(Integer.parseInt(element.getAttribute("number")));
     }
@@ -1217,8 +1220,6 @@ public class XMLToScore {
     }
   }
   public static void parseHarmony(Measure measure, Element element) {
-    Pitch root = null;
-    String kind = null;
-    Pitch bass = null;
+    // TODO
   }
 }

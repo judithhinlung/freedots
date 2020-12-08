@@ -1,12 +1,12 @@
 package v2.music;
 public class Rest extends Unpitched {
-    int displayOctave;
-  String displayStep;
+  int displayOctave;
+  int displayStep;
   boolean isMeasureRest = false;
   public Rest() {
     super();
   }
-  public Rest(int displayOctave, String displayStep) {
+  public Rest(int displayOctave, int displayStep) {
     super(displayOctave, displayStep);
   }
   public boolean getIsMeasureRest() {

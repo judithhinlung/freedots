@@ -1,14 +1,14 @@
 package v2.music;
 public class Transpose {
-  int chromaticStep = 0;
+  int step = 0;
   int diatonicPitch = 0;
   int octaveChange = 0;
   int staffNumber = 0;
-  public Transpose(int chromaticStep) {
-    this.chromaticStep = chromaticStep;
+  public Transpose(int step) {
+    this.step = step;
   }
-  public int getChromaticStep() {
-    return this.chromaticStep;
+  public int getStep() {
+    return this.step;
   }
   public int getDiatonicPitch() {
     return this.diatonicPitch;
