@@ -359,6 +359,9 @@ public class XMLToScore {
         else if (tag.equals("harmony")) {
           parseHarmony(measure, child);
         }
+        else if (tag.equals("barline")) {
+          parseBarline(measure, child);
+        }
         else if (tag.equals("sound")) {
           parseSound(measure, child);
         }
@@ -367,7 +370,7 @@ public class XMLToScore {
     part.addMeasure(measure);
   }
   /**
-   TODO: Music data: 	"harmony | barline | 
+   TODO: Music data: 	"barline | 
 	  grouping | link | bookmark)*">
   */
 
@@ -1220,6 +1223,150 @@ public class XMLToScore {
     }
   }
   public static void parseHarmony(Measure measure, Element element) {
-    // TODO
+    Harmony.Root root;
+    String kind;
+    int inversion;
+    Harmony.Bass bass;
+    Harmony.Degree degree;
+    for (Node node = element.getFirstChild(); node != null;
+      node = node.getNextSibling()) {
+      if (node.getNodeType() == Node.ELEMENT_NODE) {
+        Element child = (Element)node;
+        String tag = child.getTagName();
+        if (tag.equals("root") || tag.equals("function")) {
+          root = parseRoot(child);
+        }
+        else if (tag.equals("kind")) {
+          kind = child.getTextContent();
+        }
+        else if (tag.equals("inversion")) {
+          inversion = Integer.parseInt(child.getTextContent());
+        }
+        else if (tag.equals("bass")) {
+          bass = parseBass(child);
+        }
+        else if (tag.equals("degree")) {
+          degree = parseDegree(child);
+        }
+      }
+    }
+  }
+  public static Harmony.Root parseRoot(Element element) {
+    Harmony.Root root = null;
+    int step = 0;
+    int alter = 0;
+    for (Node node = element.getFirstChild(); node != null;
+      node = node.getNextSibling()) {
+      if (node.getNodeType() == Node.ELEMENT_NODE) {
+        Element child = (Element)node;
+        String tag = child.getTagName();
+        if (tag.equals("root-step")) {
+          step = convertStep(child.getTextContent());
+        }
+        else if (tag.equals("root-alter")) {
+          alter = Integer.parseInt(child.getTextContent());
+        }
+      }
+    }
+    root = new Harmony.Root(step, alter);
+    return root;
+  }
+  public static Harmony.Bass parseBass(Element element) {
+    int step = 0;
+    int alter = 0;
+    Harmony.Bass bass;
+    for (Node node = element.getFirstChild(); node != null;
+      node = node.getNextSibling()) {
+      if (node.getNodeType() == Node.ELEMENT_NODE) {
+        Element child = (Element)node;
+        String tag = child.getTagName();
+        if (tag.equals("bass-step")) {
+          step = convertStep(child.getTextContent());
+        }
+        else if (tag.equals("bass-alter")) {
+          alter = Integer.parseInt(child.getTextContent());
+        }
+      }
+    }
+    bass = new Harmony.Bass(step, alter);
+    return bass;
+  }
+  public static Harmony.Degree parseDegree(Element element) {
+    int value = 0;
+    int alter = 0;
+    String type = null;
+    Harmony.Degree degree;
+    for (Node node = element.getFirstChild(); node != null;
+      node = node.getNextSibling()) {
+      if (node.getNodeType() == Node.ELEMENT_NODE) {
+        Element child = (Element)node;
+        String tag = child.getTagName();
+        if (tag.equals("degree-value")) {
+          value = Integer.parseInt(child.getTextContent());
+        }
+        else if (tag.equals("degree-alter")) {
+          alter = Integer.parseInt(child.getTextContent());
+        }
+        else if (tag.equals("degree-type")) {
+          type = child.getTextContent();
+        }
+      }
+    }
+    if (value == 0) {
+      return null;
+    }
+    degree = new Harmony.Degree(value);
+    degree.setAlter(alter);
+    degree.setType(type);
+    return degree;
+  }
+  public static void parseBarline(Measure measure, Element element) {
+    Barline barline = new Barline(measure);
+    if (element.hasAttribute("location")) {
+      barline.setLocation(element.getAttribute("location"));
+    }
+    else if (element.hasAttribute("segno")) {
+      barline.setSegno(0);
+    }
+    else if (element.hasAttribute("coda")) {
+      barline.setCoda(0);
+    }
+    for (Node node = element.getFirstChild(); node != null;
+      node = node.getNextSibling()) {
+      if (node.getNodeType() == Node.ELEMENT_NODE) {
+        Element child = (Element)node;
+        String tag = child.getTagName();
+        if (tag.equals("ending")) {
+          barline.setEnding(parseEnding(element));
+        }
+        else if (tag.equals("repeat")) {
+          barline.setRepeat(parseRepeat(child));
+        }
+      }
+    }
+  }
+  public static Barline.Ending parseEnding(Element element) throws MusicXMLParseException {
+    int number = element.hasAttribute("number") ? Integer.parseInt(element.getAttribute("number")) : 0;
+    String type = element.hasAttribute("type") ? element.getAttribute("type") : null;
+    if (number == 0) {
+      throw new MusicXMLParseException("Ending missing required `number` attribute");
+    }
+    if (type == null) {
+      throw new MusicXMLParseException("Ending missing required `type` attribute");
+    }
+    Barline.Ending ending = new Barline.Ending(number, type);
+    return ending;
+  }
+  public static Barline.Repeat parseRepeat(Element element) {
+    if (!element.hasAttribute("direction")) {
+      return null;
+    }
+    String direction = element.getAttribute("direction");
+    Barline.Repeat repeat = new Barline.Repeat(direction);
+    if (element.hasAttribute("times")) {
+      int times = Integer.parseInt(element.getAttribute("times"));
+      repeat.setTimes(times);
+    }
+    return repeat;
   }
 }

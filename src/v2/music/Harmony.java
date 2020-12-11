@@ -27,13 +27,6 @@ public class Harmony extends MeasureElement {
     return this.kind;
   }
   private String[] validKinds = new String[]{"major", "minor", "augmented", "diminished", "dominant", "majorSeventh", "minorSeventh", "diminishedSeventh", "augmentedSeventh", "half-diminished", "majorSixth", "minorSixth", "dominantNinth", "majorNinth","minorNinth", "dominant11th", "major11th", "minor11th", "dominant13th", "major13th", "minor13th", "suspendedSecond", "suspendedFourth"};
-  boolean useSymbol = false;
-  public boolean getUseSymbol() {
-    return this.useSymbol;
-  }
-  public void setUseSymbol(boolean useSymbol) {
-    this.useSymbol = useSymbol;
-  }
   int inversion = 0;
   public int getInversion() {
     return this.inversion;
@@ -49,17 +42,17 @@ public class Harmony extends MeasureElement {
     this.degree = degree;
   }
   public static class Root {
-    String step;
+    int step;
     int alter;
-    public Root(String step) {
+    public Root(int step) {
       this.step = step;
       this.alter = 0;
     }
-    public Root(String step, int alter) {
+    public Root(int step, int alter) {
       this.step = step;
       this.alter = alter;
     }
-    public String getStep() {
+    public int getStep() {
       return this.step;
     }
     public int getAlter() {
@@ -67,7 +60,7 @@ public class Harmony extends MeasureElement {
     }
   }
   public static class Bass extends Root {
-    public Bass(String step, int alter) {
+    public Bass(int step, int alter) {
       super(step, alter);
     }
   }
@@ -76,7 +69,6 @@ public class Harmony extends MeasureElement {
     int alter;
     String type;
     public Degree(int value) {
-      this.alter = 0;
       this.value = value;
     }
     public void setAlter(int alter) {

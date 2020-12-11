@@ -32,35 +32,35 @@ public class Sound extends MeasureElement {
   public void setTempo(int tempo) {
     this.tempo = tempo;
   }
-  int dacapo = 0;
+  int dacapo = -1;
   public int getDacapo() {
     return this.dacapo;
   }
   public void setDacapo(int dacapo) {
     this.dacapo = dacapo;
   }
-  int segno = 0;
+  int segno = -1;
   public int getSegno() {
     return this.segno;
   }
   public void setSegno(int segno) {
     this.segno = segno;
   }
-  int dalsegno = 0;
+  int dalsegno = -1;
   public int getDalsegno() {
     return this.dalsegno;
   }
   public void setDalsegno(int dalsegno) {
     this.dalsegno = dalsegno;
   }
-  int coda = 0;
+  int coda = -1;
   public int getCoda() {
     return this.coda;
   }
   public void setCoda(int coda) {
     this.coda = coda;
   }
-  int tocoda = 0;
+  int tocoda = -1;
   public int getTocoda() {
     return this.tocoda;
   }
