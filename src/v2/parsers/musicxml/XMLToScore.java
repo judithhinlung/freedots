@@ -124,6 +124,9 @@ public class XMLToScore {
       stringBuilder.append(string + "\n");
     return new InputSource(new StringReader(stringBuilder.toString()));
   }
+
+  /** Parse score
+   */
   public static void parseScore(Score score, Element element) {
     for (Node node = element.getFirstChild(); node != null;
       node = node.getNextSibling()) {
@@ -225,17 +228,9 @@ public class XMLToScore {
       }
     }
   }
-  public static Element findElementById(Element sourceElement, String tagName, String id) {
-    NodeList tagList = sourceElement.getElementsByTagName(tagName);
-    Element sinkElement = null;
-    for (int i = 0; i < tagList.getLength(); i++) {
-      Element currentElement = (Element)tagList.item(i);
-      if (currentElement.getAttribute("id").equals(id)) {
-        sinkElement = currentElement;
-      }
-    }
-    return sinkElement;
-  }
+
+  /** Parse part
+   */
   public static void parsePart(Part part, Element element) {
     for (Node node = element.getFirstChild(); node != null;
       node = node.getNextSibling()) {
@@ -326,6 +321,8 @@ public class XMLToScore {
       }
     }
   }
+  /** Parse measure
+   */
   public static void parseMeasure(Part part, Element element) {
     int number = Integer.parseInt(element.getAttribute("number"));
     Measure measure = new Measure(part, number);
@@ -369,62 +366,9 @@ public class XMLToScore {
     }
     part.addMeasure(measure);
   }
-  /**
-   TODO: Music data: 	"barline | 
-	  grouping | link | bookmark)*">
-  */
 
-  public static void parseAttributes(Measure measure, Element element) {
-    for (Node node = element.getFirstChild(); node != null;
-      node = node.getNextSibling()) {
-      if (node.getNodeType() == Node.ELEMENT_NODE) {
-        Element child = (Element)node;
-        String tag = child.getTagName();
-        if (tag.equals("divisions")) {
-          int divisions = Integer.parseInt(child.getTextContent());
-          measure.setDivisions(divisions);
-        }
-        else if (tag.equals("key")) {
-          parseKey(measure, child);
-        }
-        else if (tag.equals("time")) {
-          parseTime(measure, child);
-        }
-        else if (tag.equals("staves")) {
-          int staves = Integer.parseInt(child.getTextContent());
-          measure.getPart().setStaves(staves);
-        }
-        else if (tag.equals("clef")) {
-          parseClef(measure, child);
-        }
-        else if (tag.equals("transpose")) {
-          parseTranspose(measure, child);
-        }
-      }
-    }
-  }
-  public static void parseDirection(Measure measure, Element element) {
-    for (Node node = element.getFirstChild(); node != null;
-      node = node.getNextSibling()) {
-      if (node.getNodeType() == Node.ELEMENT_NODE) {
-        Element child = (Element)node;
-        String tag = child.getTagName();
-        if (tag.equals("words")) {
-          String text = child.getTextContent();
-          measure.addElement(new TextDirection(measure, text));
-        }
-        else if (tag.equals("pedal")) {
-          parsePedal(measure, child);
-        }
-        else if (tag.equals("metronome")) {
-          parseMetronome(measure, child);
-        }
-        else if (tag.equals("sound")) {
-          parseSound(measure, child);
-        }
-      }
-    }
-  }
+  /** Parse note
+   */  
   public static void parseNote(Note note, Element element) {
     if (element.hasAttribute("pizzicato")) {
       note.setPizzicato(true);
@@ -487,6 +431,9 @@ public class XMLToScore {
   public static int convertStep(String step) {
     return "CDEFGAB".indexOf(step.trim().toUpperCase());
   }
+
+  /** Methods for parsing a note
+    */
   private static Pitch parsePitch(Element element) throws MusicXMLParseException {
     int octave = 0;
     int alter = 0;
@@ -936,6 +883,9 @@ public class XMLToScore {
     }
     return null;
   }
+
+  /* Figured bass
+   */
   public static FiguredBass parseFiguredBass(Measure measure, Element element) {
     int duration = 0;
     String prefix = null;
@@ -994,6 +944,9 @@ public class XMLToScore {
     }
     return figuredBass;
   }
+
+  /** Parse backup and forward
+  */
   public static void parseBackup(Measure measure, Element element) {
     Fraction duration = Fraction.ZERO;
     NodeList list = element.getElementsByTagName("duration");
@@ -1029,123 +982,39 @@ public class XMLToScore {
     forward.setVoice(voice);
     measure.addForwardElement(forward);
   }
-  public static void parsePedal(Measure measure, Element element) throws MusicXMLParseException {
-    NodeList list = element.getElementsByTagName("type");
-    if (list.getLength() == 0) {
-      throw new MusicXMLParseException("Missing type element for pedal");
-    }
-    String type = list.item(0).getTextContent();
-    Pedal pedal = new Pedal(measure, type);
-    measure.addElement(pedal);
-  }
-  public static int getTimeOnly(Element element) {
-    int time = 0;
-    if (element.hasAttribute("time-only")) {
-      time += Integer.parseInt(element.getAttribute("time-only"));
-    }
-    return time;
-  }
 
-  public static void parseMetronome(Measure measure, Element element) throws MusicXMLParseException {
-    String beatUnit = null;
-    int perMinute = 0;
-    Note metronomeNote = null;
-    String metronomeRelation = null;
+  /* Parse attributes
+   */
+  public static void parseAttributes(Measure measure, Element element) {
     for (Node node = element.getFirstChild(); node != null;
       node = node.getNextSibling()) {
       if (node.getNodeType() == Node.ELEMENT_NODE) {
         Element child = (Element)node;
         String tag = child.getTagName();
-        if (tag.equals("beat-unit")) {
-          beatUnit = child.getTextContent();
+        if (tag.equals("divisions")) {
+          int divisions = Integer.parseInt(child.getTextContent());
+          measure.setDivisions(divisions);
         }
-        else if (tag.equals("per-minute")) {
-          String perMinuteText = child.getTextContent();
-          perMinute = Integer.parseInt(perMinuteText.replaceAll("\\D+", ""));
+        else if (tag.equals("key")) {
+          parseKey(measure, child);
         }
-        else if (tag.equals("metronome-note")) {
-          metronomeNote = new Note(measure);
-          parseNote(metronomeNote, child);
+        else if (tag.equals("time")) {
+          parseTime(measure, child);
         }
-        else if (tag.equals("metronome-relation")) {
-          metronomeRelation = child.getTextContent();
+        else if (tag.equals("staves")) {
+          int staves = Integer.parseInt(child.getTextContent());
+          measure.getPart().setStaves(staves);
+        }
+        else if (tag.equals("clef")) {
+          parseClef(measure, child);
+        }
+        else if (tag.equals("transpose")) {
+          parseTranspose(measure, child);
         }
       }
     }
-    if ((beatUnit == null) || (perMinute == 0)) {
-      throw new MusicXMLParseException("Missing the 'beat-unit' or 'per-minute' elements for the 'metronome' element");
-    }
-    Metronome metronome = new Metronome(measure, beatUnit, perMinute);
-    if (metronomeNote != null) {
-    metronome.setMetronomeNote(metronomeNote);
-    }
-    if (metronomeRelation != null) {
-    metronome.setMetronomeRelation(metronomeRelation);
-    }
-    measure.addElement(metronome);
   }
 
-  public static void parseSound(Measure measure, Element element) {
-    Sound sound = new Sound(measure);
-    if (element.hasAttribute("tempo")) {
-      int tempo = Integer.parseInt(element.getAttribute("tempo"));
-      sound.setTempo(tempo);
-    }
-    else if (element.hasAttribute("dynamics")) {
-      int velocity = Integer.parseInt(element.getAttribute("dynamics"));
-      sound.setVelocity(velocity);
-    }
-    else if (element.hasAttribute("dacapo")) {
-      int dacapo = 1;
-      dacapo += getTimeOnly(element);
-      sound.setDacapo(dacapo);
-    }
-    else if (element.hasAttribute("segno")) {
-      sound.setSegno(0);
-    }
-    else if (element.hasAttribute("coda")) {
-      sound.setCoda(0);
-    }
-    else if (element.hasAttribute("dalsegno")) {
-      int dalsegno = 1;
-      dalsegno += getTimeOnly(element);
-      sound.setDalsegno(dalsegno);
-    }
-    else if (element.hasAttribute("tocoda")) {
-      int tocoda = 2;
-      tocoda += getTimeOnly(element);
-      sound.setTocoda(tocoda);
-    }
-    else if (element.hasAttribute("forward-repeat")) {
-      sound.setForwardRepeat(true);
-    }
-    else if (element.hasAttribute("fine")) {
-      sound.setFine(true);
-    }
-    else if (element.hasAttribute("pizzicato")) {
-      sound.setPizzicato(true);
-    } 
-    for (Node node = element.getFirstChild(); node != null;
-      node = node.getNextSibling()) {
-      if (node.getNodeType() == Node.ELEMENT_NODE) {
-        Element child = (Element)node;
-        String tag = child.getTagName();
-        if (tag.equals("midi-instrument")) {
-          Part part = measure.getPart();
-          parseMidiInstrument(part, child);
-          String id = child.getAttribute("id");
-          sound.setInstrument(part.getInstrument(id));
-        }
-        else if (tag.equals("offset")) {
-          int numerator = Integer.parseInt(child.getTextContent());
-          int denominator = measure.getDivisions();
-          Fraction offset = new Fraction(numerator, denominator);
-          sound.setOffset(offset);
-        }
-      }
-    }
-    measure.addElement(sound);
-  }
   public static void parseKey(Measure measure, Element element) {
     Element fifths = (Element)element.getElementsByTagName("fifths").item(0);
     int type = Integer.parseInt(fifths.getTextContent());
@@ -1222,6 +1091,151 @@ public class XMLToScore {
       }
     }
   }
+
+  /** Parse direction
+   */
+  public static void parseDirection(Measure measure, Element element) {
+    for (Node node = element.getFirstChild(); node != null;
+      node = node.getNextSibling()) {
+      if (node.getNodeType() == Node.ELEMENT_NODE) {
+        Element child = (Element)node;
+        String tag = child.getTagName();
+        if (tag.equals("words")) {
+          String text = child.getTextContent();
+          measure.addElement(new TextDirection(measure, text));
+        }
+        else if (tag.equals("pedal")) {
+          parsePedal(measure, child);
+        }
+        else if (tag.equals("metronome")) {
+          parseMetronome(measure, child);
+        }
+        else if (tag.equals("sound")) {
+          parseSound(measure, child);
+        }
+      }
+    }
+  }
+
+  public static void parsePedal(Measure measure, Element element) throws MusicXMLParseException {
+    NodeList list = element.getElementsByTagName("type");
+    if (list.getLength() == 0) {
+      throw new MusicXMLParseException("Missing type element for pedal");
+    }
+    String type = list.item(0).getTextContent();
+    Pedal pedal = new Pedal(measure, type);
+    measure.addElement(pedal);
+  }
+  public static int getTimeOnly(Element element) {
+    int time = 0;
+    if (element.hasAttribute("time-only")) {
+      time += Integer.parseInt(element.getAttribute("time-only"));
+    }
+    return time;
+  }
+
+  public static void parseMetronome(Measure measure, Element element) throws MusicXMLParseException {
+    String beatUnit = null;
+    int perMinute = 0;
+    Note metronomeNote = null;
+    String metronomeRelation = null;
+    for (Node node = element.getFirstChild(); node != null;
+      node = node.getNextSibling()) {
+      if (node.getNodeType() == Node.ELEMENT_NODE) {
+        Element child = (Element)node;
+        String tag = child.getTagName();
+        if (tag.equals("beat-unit")) {
+          beatUnit = child.getTextContent();
+        }
+        else if (tag.equals("per-minute")) {
+          String perMinuteText = child.getTextContent();
+          perMinute = Integer.parseInt(perMinuteText.replaceAll("\\D+", ""));
+        }
+        else if (tag.equals("metronome-note")) {
+          metronomeNote = new Note(measure);
+          parseNote(metronomeNote, child);
+        }
+        else if (tag.equals("metronome-relation")) {
+          metronomeRelation = child.getTextContent();
+        }
+      }
+    }
+    if ((beatUnit == null) || (perMinute == 0)) {
+      throw new MusicXMLParseException("Missing the 'beat-unit' or 'per-minute' elements for the 'metronome' element");
+    }
+    Metronome metronome = new Metronome(measure, beatUnit, perMinute);
+    if (metronomeNote != null) {
+    metronome.setMetronomeNote(metronomeNote);
+    }
+    if (metronomeRelation != null) {
+    metronome.setMetronomeRelation(metronomeRelation);
+    }
+    measure.addElement(metronome);
+  }
+  public static void parseSound(Measure measure, Element element) {
+    Sound sound = new Sound(measure);
+    if (element.hasAttribute("tempo")) {
+      int tempo = Integer.parseInt(element.getAttribute("tempo"));
+      sound.setTempo(tempo);
+    }
+    else if (element.hasAttribute("dynamics")) {
+      int velocity = Integer.parseInt(element.getAttribute("dynamics"));
+      sound.setVelocity(velocity);
+    }
+    else if (element.hasAttribute("dacapo")) {
+      int dacapo = 1;
+      dacapo += getTimeOnly(element);
+      sound.setDacapo(dacapo);
+    }
+    else if (element.hasAttribute("segno")) {
+      sound.setSegno(0);
+    }
+    else if (element.hasAttribute("coda")) {
+      sound.setCoda(0);
+    }
+    else if (element.hasAttribute("dalsegno")) {
+      int dalsegno = 1;
+      dalsegno += getTimeOnly(element);
+      sound.setDalsegno(dalsegno);
+    }
+    else if (element.hasAttribute("tocoda")) {
+      int tocoda = 2;
+      tocoda += getTimeOnly(element);
+      sound.setTocoda(tocoda);
+    }
+    else if (element.hasAttribute("forward-repeat")) {
+      sound.setForwardRepeat(true);
+    }
+    else if (element.hasAttribute("fine")) {
+      sound.setFine(true);
+    }
+    else if (element.hasAttribute("pizzicato")) {
+      sound.setPizzicato(true);
+    } 
+    for (Node node = element.getFirstChild(); node != null;
+      node = node.getNextSibling()) {
+      if (node.getNodeType() == Node.ELEMENT_NODE) {
+        Element child = (Element)node;
+        String tag = child.getTagName();
+        if (tag.equals("midi-instrument")) {
+          Part part = measure.getPart();
+          parseMidiInstrument(part, child);
+          String id = child.getAttribute("id");
+          sound.setInstrument(part.getInstrument(id));
+        }
+        else if (tag.equals("offset")) {
+          int numerator = Integer.parseInt(child.getTextContent());
+          int denominator = measure.getDivisions();
+          Fraction offset = new Fraction(numerator, denominator);
+          sound.setOffset(offset);
+        }
+      }
+    }
+    measure.addElement(sound);
+  }
+  
+  /** Parse harmony
+   */
   public static void parseHarmony(Measure measure, Element element) {
     Harmony.Root root;
     String kind;
@@ -1320,6 +1334,9 @@ public class XMLToScore {
     degree.setType(type);
     return degree;
   }
+
+  /** Parse barline
+   */
   public static void parseBarline(Measure measure, Element element) {
     Barline barline = new Barline(measure);
     if (element.hasAttribute("location")) {
@@ -1368,5 +1385,18 @@ public class XMLToScore {
       repeat.setTimes(times);
     }
     return repeat;
+  }
+
+  // Miscellaneous helper methods
+  public static Element findElementById(Element sourceElement, String tagName, String id) {
+    NodeList tagList = sourceElement.getElementsByTagName(tagName);
+    Element sinkElement = null;
+    for (int i = 0; i < tagList.getLength(); i++) {
+      Element currentElement = (Element)tagList.item(i);
+      if (currentElement.getAttribute("id").equals(id)) {
+        sinkElement = currentElement;
+      }
+    }
+    return sinkElement;
   }
 }
