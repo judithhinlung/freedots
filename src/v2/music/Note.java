@@ -6,17 +6,21 @@ import freedots.math.Fraction;
 /** A wrapper around (the most important) note element.
  */
 public class Note extends MeasureElement {
-  public Note(Measure measure) {
+  Measure measure;
+  Pitch pitch;
+  Fraction duration;
+  public Note(Measure measure, Pitch pitch, Fraction duration) {
     super(measure);
+    this.pitch = pitch;
+    this.duration = duration;
     this.staff = 1;
     this.voice = 1;
   }
-  Pitch pitch;
   public Pitch getPitch() {
     return this.pitch;
   }
-  public void setPitch(Pitch pitch) {
-    this.pitch = pitch;
+  public Fraction getDuration() {
+    return this.duration;
   }
   String type;
   public String getType() {
@@ -28,15 +32,6 @@ public class Note extends MeasureElement {
        throw new IllegalArgumentException("Invalid note type: " + type);
     }
     this.type = type;
-  }
-  Fraction duration;
-  /** Returns the relative duration for this note.
-   */
-  public Fraction getDuration() {
-    return this.duration;
-  }
-  public void setDuration(Fraction duration) {
-    this.duration = duration;
   }
   public Fraction getDurationFromType(String type) {
     HashMap<String, Fraction> typesToDurations = new HashMap<String, Fraction>();
@@ -87,20 +82,6 @@ public class Note extends MeasureElement {
   }
   public void setGrace(Grace grace) {
     this.grace = grace;
-  }
-  private Unpitched unpitched = null;
-  public Unpitched getUnpitched() {
-    return this.unpitched;
-  }
-  public void setUnpitched(Unpitched unpitched) {
-    this.unpitched = unpitched;
-  }
-  private Rest rest = null;
-  public Rest getRest() {
-    return this.rest;
-  }
-  public void setRest(Rest rest) {
-    this.rest = rest;
   }
   private TimeModification timeModification;
   public TimeModification getTimeModification() {

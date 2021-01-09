@@ -133,7 +133,10 @@ public class XMLToScore {
       if (node.getNodeType() == Node.ELEMENT_NODE) {
         Element child = (Element)node;
         String tag = child.getTagName();
-        if (tag.equals("work")) {
+        if (tag.equals("identification")) {
+          parseIdentification(score, child);
+        }
+        else if (tag.equals("work")) {
           parseWork(score, element);
         }
         else if (tag.equals("part-list")) {
@@ -142,31 +145,7 @@ public class XMLToScore {
       }
     }
   }
-  public static void parseWork(Score score, Element element) {
-    for (Node node = element.getFirstChild(); node != null;
-      node = node.getNextSibling()) {
-      if (node.getNodeType() == Node.ELEMENT_NODE) {
-        Element child = (Element)node;
-        String tag = child.getTagName();
-        if (tag.equals("work-number")) {
-          score.setWorkNumber(child.getTextContent());
-        }
-        else if (tag.equals("work-title")) {
-          score.setWorkTitle(child.getTextContent());
-        }
-        else if (tag.equals("opus")) {
-          score.setOpus(child.getTextContent());
-        }
-        else if (tag.equals("movement-number")) {
-          score.setMovementNumber(child.getTextContent());
-        }
-        else if (tag.equals("movement-title")) {
-          score.setMovementTitle(child.getTextContent());
-        }
-      }
-    }
-  }
-  public static void parseIdentification(Score score, Element element) {
+  private static void parseIdentification(Score score, Element element) {
     for (Node node = element.getFirstChild(); node != null;
       node = node.getNextSibling()) {
       if (node.getNodeType() == Node.ELEMENT_NODE) {
@@ -207,7 +186,32 @@ public class XMLToScore {
       }
     }
   }
-  public static void parseParts(Score score, Element element) {
+
+  private static void parseWork(Score score, Element element) {
+    for (Node node = element.getFirstChild(); node != null;
+      node = node.getNextSibling()) {
+      if (node.getNodeType() == Node.ELEMENT_NODE) {
+        Element child = (Element)node;
+        String tag = child.getTagName();
+        if (tag.equals("work-number")) {
+          score.setWorkNumber(child.getTextContent());
+        }
+        else if (tag.equals("work-title")) {
+          score.setWorkTitle(child.getTextContent());
+        }
+        else if (tag.equals("opus")) {
+          score.setOpus(child.getTextContent());
+        }
+        else if (tag.equals("movement-number")) {
+          score.setMovementNumber(child.getTextContent());
+        }
+        else if (tag.equals("movement-title")) {
+          score.setMovementTitle(child.getTextContent());
+        }
+      }
+    }
+  }
+  private static void parseParts(Score score, Element element) {
     ArrayList<Part> parts = score.getParts();
     for (Node node = element.getFirstChild(); node != null;
       node = node.getNextSibling()) {
@@ -228,10 +232,22 @@ public class XMLToScore {
       }
     }
   }
+  public static Element findElementById(Element sourceElement, String tagName, String id) {
+    NodeList tagList = sourceElement.getElementsByTagName(tagName);
+    Element sinkElement = null;
+    for (int i = 0; i < tagList.getLength(); i++) {
+      Element currentElement = (Element)tagList.item(i);
+      if (currentElement.getAttribute("id").equals(id)) {
+        sinkElement = currentElement;
+      }
+    }
+    return sinkElement;
+  }
+
 
   /** Parse part
    */
-  public static void parsePart(Part part, Element element) {
+  static void parsePart(Part part, Element element) {
     for (Node node = element.getFirstChild(); node != null;
       node = node.getNextSibling()) {
       if (node.getNodeType() == Node.ELEMENT_NODE) {
@@ -255,7 +271,7 @@ public class XMLToScore {
       }
     }
   }
-  public static void parseScoreInstrument(Part part, Element element) {
+  static void parseScoreInstrument(Part part, Element element) {
     String id = element.getAttribute("id");
     Instrument instrument = new Instrument(id);
     NodeList list = element.getChildNodes();
@@ -274,7 +290,7 @@ public class XMLToScore {
     }
     part.addInstrument(instrument);
   }
-  public static Instrument findInstrumentById(String id, Part part) {
+  private static Instrument findInstrumentById(String id, Part part) {
     Instrument instrument = null;
     ArrayList<Instrument> instruments = part.getInstruments();
     for (int i = 0; i < instruments.size(); i++) {
@@ -285,7 +301,7 @@ public class XMLToScore {
     }
     return instrument;
   }
-  public static void parseMidiInstrument(Part part, Element element) {
+  static void parseMidiInstrument(Part part, Element element) {
     String id = element.getAttribute("id");
     Instrument instrument = findInstrumentById(id, part);
     if (instrument == null) {
@@ -323,7 +339,7 @@ public class XMLToScore {
   }
   /** Parse measure
    */
-  public static void parseMeasure(Part part, Element element) {
+  static void parseMeasure(Part part, Element element) {
     int number = Integer.parseInt(element.getAttribute("number"));
     Measure measure = new Measure(part, number);
     NodeList list = element.getChildNodes();
@@ -333,8 +349,7 @@ public class XMLToScore {
         Element child = (Element)(list.item(i));
         String tag = child.getTagName();
         if (tag.equals("note")) {
-          Note note = new Note(measure);
-          parseNote(note, child);
+          Note note = parseNote(measure, child);
           measure.addNote(note);
         }
         else if (tag.equals("backup")) {
@@ -369,32 +384,45 @@ public class XMLToScore {
 
   /** Parse note
    */  
-  public static void parseNote(Note note, Element element) {
-    if (element.hasAttribute("pizzicato")) {
-      note.setPizzicato(true);
-    }
+  static Note parseNote(Measure measure, Element element) {
+    Pitch pitch = null;
+    Fraction duration = null;
     for (Node node = element.getFirstChild(); node != null;
       node = node.getNextSibling()) {
       if (node.getNodeType() == Node.ELEMENT_NODE) {
         Element child = (Element)node;
         String tag = child.getTagName();
         if (tag.equals("pitch")) {
-          note.setPitch(parsePitch(child));
+          pitch = parsePitch(child);
         }
-        else if (tag.equals("grace")) {
+        else if (tag.equals("unpitched")) {
+          pitch = parseUnpitched(child);
+        }
+        else if (tag.equals("rest")) {
+          pitch = parseRest(child);
+        }
+        else if (tag.equals("duration")) {
+          duration = parseDuration(measure, child);
+        }
+      }
+      if (pitch != null && duration != null) {
+        break;
+      }
+    }
+    if (pitch == null || duration == null) {
+      return null;
+    }
+    Note note = new Note(measure, pitch, duration);
+    for (Node node = element.getFirstChild(); node != null;
+      node = node.getNextSibling()) {
+      if (node.getNodeType() == Node.ELEMENT_NODE) {
+        Element child = (Element)node;
+        String tag = child.getTagName();
+        if (tag.equals("grace")) {
           note.setGrace(parseGrace(child));
         }
         else if (tag.equals("chord")) {
           parseChord(note, child);
-        }
-        else if (tag.equals("unpitched")) {
-           note.setUnpitched(parseUnpitched(child));
-        }
-        else if (tag.equals("rest")) {
-          note.setRest(parseRest(child));
-        }
-        else if (tag.equals("duration")) {
-          parseDuration(note, child);
         }
         else if (tag.equals("time-modification")) {
 		      note.setTimeModification(parseTimeModification(child));
@@ -427,8 +455,13 @@ public class XMLToScore {
         }
       }
     }
+    if (element.hasAttribute("pizzicato")) {
+      note.setPizzicato(true);
+    }
+
+    return note;
   }
-  public static int convertStep(String step) {
+  private static int convertStep(String step) {
     return "CDEFGAB".indexOf(step.trim().toUpperCase());
   }
 
@@ -462,7 +495,51 @@ public class XMLToScore {
     if (!foundOctave || !foundStep) {
       throw new MusicXMLParseException("Missing step or octave element");
     }
-    return new Pitch(octave, step, alter);
+    return new Pitch("p", octave, step, alter);
+  }
+  private static Pitch parseUnpitched(Element element) {
+    NodeList list = element.getChildNodes();
+    int octave = -1;
+    int step = 0;
+    for (int i = 0; i < list.getLength(); i++) {
+      Node node = list.item(i);
+      if (node.getNodeType() == Node.ELEMENT_NODE) {
+        Element child = (Element)(list.item(i));
+        String tag = child.getTagName();
+        if (tag.equals("octave")) {
+          octave = Integer.parseInt(child.getTextContent());
+        }
+        else if (tag.equals("step")) {
+          step = convertStep(child.getTextContent());
+        }
+      }
+    }
+    return new Pitch("u", octave, step);
+  }
+  private static Pitch parseRest(Element element) {
+    int displayOctave = 0;
+    int displayStep = 0;
+    boolean isMeasureRest = false;
+    if (element.hasAttribute("measure")) {
+      isMeasureRest = element.getAttribute("measure").equals("yes");
+    }
+    NodeList list = element.getChildNodes();
+    for (int i = 0; i < list.getLength(); i++) {
+      Node node = list.item(i);
+      if (node.getNodeType() == Node.ELEMENT_NODE) {
+        Element child = (Element)(list.item(i));
+        String tag = child.getTagName();
+        if (tag.equals("octave")) {
+          displayOctave = Integer.parseInt(child.getTextContent());
+        }
+        else if (tag.equals("step")) {
+          displayStep = convertStep(child.getTextContent());
+        }
+      }
+    }
+    Pitch rest = new Pitch("r", displayOctave, displayStep);
+    rest.setIsMeasureRest(isMeasureRest);
+    return rest;
   }
   private static Grace parseGrace(Element element) {
     if (element.getAttributes().getLength() == 0) {
@@ -486,7 +563,7 @@ public class XMLToScore {
     }
     return new Grace(stealTimePrevious, stealTimeFollowing, makeTime, slash);
 	 }
-  public static void parseChord(Note note, Element element) {
+  private static void parseChord(Note note, Element element) {
     Measure measure = note.getMeasure();
     MeasureElement last = getLastNoteOrChord(measure);
     if (last instanceof Chord) {
@@ -502,7 +579,7 @@ public class XMLToScore {
       measure.addChord(chord);
     }
   }
-  public static MeasureElement getLastNoteOrChord(Measure measure) {
+  private static MeasureElement getLastNoteOrChord(Measure measure) {
     ArrayList<MeasureElement> elements = measure.getElements();
     for (int i = elements.size()-1; i >= 0; i++) {
       MeasureElement element = elements.get(i);
@@ -515,56 +592,12 @@ public class XMLToScore {
     }
     return null;
   }
-  public static Unpitched parseUnpitched(Element element) {
-    NodeList list = element.getChildNodes();
-    int octave = -1;
-    int step = 0;
-    for (int i = 0; i < list.getLength(); i++) {
-      Node node = list.item(i);
-      if (node.getNodeType() == Node.ELEMENT_NODE) {
-        Element child = (Element)(list.item(i));
-        String tag = child.getTagName();
-        if (tag.equals("octave")) {
-          octave = Integer.parseInt(child.getTextContent());
-        }
-        else if (tag.equals("step")) {
-          step = convertStep(child.getTextContent());
-        }
-      }
-    }
-    return new Unpitched(octave, step);
-  }
-  public static Rest parseRest(Element element) {
-    int displayOctave = 0;
-    int displayStep = 0;
-    boolean isMeasureRest = false;
-    if (element.hasAttribute("measure")) {
-      isMeasureRest = element.getAttribute("measure").equals("yes");
-    }
-    NodeList list = element.getChildNodes();
-    for (int i = 0; i < list.getLength(); i++) {
-      Node node = list.item(i);
-      if (node.getNodeType() == Node.ELEMENT_NODE) {
-        Element child = (Element)(list.item(i));
-        String tag = child.getTagName();
-        if (tag.equals("octave")) {
-          displayOctave = Integer.parseInt(child.getTextContent());
-        }
-        else if (tag.equals("step")) {
-          displayStep = convertStep(child.getTextContent());
-        }
-      }
-    }
-    Rest rest = new Rest(displayOctave, displayStep);
-    rest.setIsMeasureRest(isMeasureRest);
-    return rest;
-  }
-  public static void parseDuration(Note note, Element element) {
+  private static Fraction parseDuration(Measure measure, Element element) {
     int numerator = Integer.parseInt(element.getTextContent());
-    int denominator = note.getMeasure().getDivisions();
-    note.setDuration(new Fraction(numerator, denominator));
+    int denominator = measure.getDivisions();
+    return new Fraction(numerator, denominator);
   }
-  public static TimeModification parseTimeModification(Element element) {
+  private static TimeModification parseTimeModification(Element element) {
     int normalNotes = 0;
     int actualNotes = 0;
     String normalType = null;
@@ -594,16 +627,16 @@ public class XMLToScore {
     }
     return tm;
   }
-  public static String parseInstrumentId(Element element) {
+  private static String parseInstrumentId(Element element) {
     return element.getAttribute("id");
   }
-  public static String parseType(Element element) {
+  private static String parseType(Element element) {
     return element.getTextContent();
   }
-  public static Accidental parseAccidental(Element element) {
+  private static Accidental parseAccidental(Element element) {
     return new Accidental(element.getTextContent());
   }
-  public static void parseNotations(Note note, Element element) {
+  private static void parseNotations(Note note, Element element) {
     for (Node node = element.getFirstChild(); node != null;
       node = node.getNextSibling()) {
       if (node.getNodeType() == Node.ELEMENT_NODE) {
@@ -645,7 +678,7 @@ public class XMLToScore {
       }
     }
   }
-  public static Tuplet parseTuplet(Element element) {
+  private static Tuplet parseTuplet(Element element) {
     int normalNotes = 0;
     int actualNotes = 0;
     NodeList list = element.getChildNodes();
@@ -664,8 +697,8 @@ public class XMLToScore {
     }
     return new Tuplet(normalNotes, actualNotes);
   }
-    // Converts a hyphenated string to camel case
-  public static String hyphenatedToCamel(String hyphenatedString) {
+  // Converts a hyphenated string to camel case
+  private static String hyphenatedToCamel(String hyphenatedString) {
     String[] words = hyphenatedString.split("-");
     if (words.length < 2) {
 	    return words[0];
@@ -676,7 +709,7 @@ public class XMLToScore {
     }
     return camelString;
   }
-  public static void parseOrnaments(Note note, Element element) {
+  private static void parseOrnaments(Note note, Element element) {
 	ArrayList<Ornament> ornaments = note.getOrnaments();
 	    for (Node node = element.getFirstChild(); node != null;
       node = node.getNextSibling()) {
@@ -699,7 +732,7 @@ public class XMLToScore {
       }
     }
   }
-  public static void parseArticulations(Note note, Element element) {
+  private static void parseArticulations(Note note, Element element) {
     for (Node node = element.getFirstChild(); node != null;
       node = node.getNextSibling()) {
       if (node.getNodeType() == Node.ELEMENT_NODE) {
@@ -715,7 +748,7 @@ public class XMLToScore {
       }
     }
   }
-  public static void parseTechnicals(Note note, Element element) {
+  private static void parseTechnicals(Note note, Element element) {
 	    for (Node node = element.getFirstChild(); node != null;
       node = node.getNextSibling()) {
       if (node.getNodeType() == Node.ELEMENT_NODE) {
@@ -754,7 +787,7 @@ public class XMLToScore {
   /** Unless artificial is specified in the XML score, harmonics are 
    * instantiated with the natural type by default.
    */
-  public static Harmonic parseHarmonic(Element element) {
+  private static Harmonic parseHarmonic(Element element) {
     String type = null;
     NodeList list = element.getElementsByTagName("artificial");
     if (list.getLength() > 0) {
@@ -772,7 +805,7 @@ public class XMLToScore {
     }
     return harmonic;
   }
-  public static Fingering parseFingering(Element element) {
+  private static Fingering parseFingering(Element element) {
     int finger = Integer.parseInt(element.getTextContent());
     Fingering fingering = null;
     try {
@@ -783,7 +816,7 @@ public class XMLToScore {
     }
     return fingering;
   }
-  public static PluckFingering parsePluck(Element element) {
+  private static PluckFingering parsePluck(Element element) {
     String finger = element.getTextContent();
     PluckFingering pluckFingering = null;
     try {
@@ -794,7 +827,7 @@ public class XMLToScore {
     }
     return pluckFingering;
   }
-  public static Fret parseFret(Element element) {
+  private static Fret parseFret(Element element) {
     return new Fret(Integer.parseInt(element.getTextContent()));
   }
   public static MusicString parseMusicString(Element element) {
@@ -803,7 +836,7 @@ public class XMLToScore {
     /** Determines whether the hole should be closed (yes), half-closed (half), 
      * or open (no) using the hole-closed child element
      */
-  public static Hole parseHole(Element element) {
+  private static Hole parseHole(Element element) {
     Hole hole = null;
     Element holeClosed = (Element)(element.getElementsByTagName("hole-closed").item(0));
     String type = holeClosed.getTextContent();
@@ -814,7 +847,8 @@ public class XMLToScore {
       System.out.println("Invalid hole symbol: " + type);
     }
     return hole;
-  }  public static void parseDynamic(Note note, Element element) {
+  }
+  private static void parseDynamic(Note note, Element element) {
     NodeList list = element.getChildNodes();
     for (int i = 0; i < list.getLength(); i++) {
 	Element child = (Element)(list.item(i));
@@ -827,7 +861,7 @@ public class XMLToScore {
       }
     }
   }
-  public static Arpeggiate parseArpeggiate(Element element) {
+  private static Arpeggiate parseArpeggiate(Element element) {
     if (element.hasAttribute("number") && element.hasAttribute("direction")) {
       int num = Integer.parseInt(element.getAttribute("number"));
       String dir = element.getAttribute("direction");
@@ -835,7 +869,7 @@ public class XMLToScore {
    	}
     return new Arpeggiate();
   }
-  public static Lyric parseLyric(Element element) {
+  private static Lyric parseLyric(Element element) {
     String text = null;
     String syllabic = null;
     boolean hasElision = false;
@@ -886,7 +920,7 @@ public class XMLToScore {
 
   /* Figured bass
    */
-  public static FiguredBass parseFiguredBass(Measure measure, Element element) {
+  static FiguredBass parseFiguredBass(Measure measure, Element element) {
     int duration = 0;
     String prefix = null;
     int number = 0;
@@ -947,7 +981,7 @@ public class XMLToScore {
 
   /** Parse backup and forward
   */
-  public static void parseBackup(Measure measure, Element element) {
+  static void parseBackup(Measure measure, Element element) {
     Fraction duration = Fraction.ZERO;
     NodeList list = element.getElementsByTagName("duration");
     if (list.getLength() == 1) {
@@ -958,7 +992,7 @@ public class XMLToScore {
     }
     measure.addBackupElement(new Backup(measure, duration));
   }
-  public static void parseForward(Measure measure, Element element) {
+  static void parseForward(Measure measure, Element element) {
     int numerator = 0;
     int denominator = measure.getDivisions();
     Fraction duration = Fraction.ZERO;
@@ -985,7 +1019,7 @@ public class XMLToScore {
 
   /* Parse attributes
    */
-  public static void parseAttributes(Measure measure, Element element) {
+  static void parseAttributes(Measure measure, Element element) {
     for (Node node = element.getFirstChild(); node != null;
       node = node.getNextSibling()) {
       if (node.getNodeType() == Node.ELEMENT_NODE) {
@@ -1014,8 +1048,7 @@ public class XMLToScore {
       }
     }
   }
-
-  public static void parseKey(Measure measure, Element element) {
+  private static void parseKey(Measure measure, Element element) {
     Element fifths = (Element)element.getElementsByTagName("fifths").item(0);
     int type = Integer.parseInt(fifths.getTextContent());
     KeySignature key = new KeySignature(type);
@@ -1029,7 +1062,7 @@ public class XMLToScore {
     TimeSignature time = new TimeSignature(numerator, denominator);
     measure.setTime(time);
   }
-  public static void parseClef(Measure measure, Element element) {
+  private static void parseClef(Measure measure, Element element) {
     String sign = null;
   int line = 0;
   int octaveChange = 0;
@@ -1060,7 +1093,7 @@ public class XMLToScore {
     Part part = measure.getPart();
     part.addClef(clef);
   }
-  public static void parseTranspose(Measure measure, Element element) throws MusicXMLParseException {
+  static void parseTranspose(Measure measure, Element element) throws MusicXMLParseException {
     if (element.getElementsByTagName("chromatic").getLength() == 0) {
       throw new MusicXMLParseException("Missingchromatic step in transpose element");
     }
@@ -1094,7 +1127,7 @@ public class XMLToScore {
 
   /** Parse direction
    */
-  public static void parseDirection(Measure measure, Element element) {
+  static void parseDirection(Measure measure, Element element) {
     for (Node node = element.getFirstChild(); node != null;
       node = node.getNextSibling()) {
       if (node.getNodeType() == Node.ELEMENT_NODE) {
@@ -1117,7 +1150,7 @@ public class XMLToScore {
     }
   }
 
-  public static void parsePedal(Measure measure, Element element) throws MusicXMLParseException {
+  private static void parsePedal(Measure measure, Element element) throws MusicXMLParseException {
     NodeList list = element.getElementsByTagName("type");
     if (list.getLength() == 0) {
       throw new MusicXMLParseException("Missing type element for pedal");
@@ -1126,7 +1159,7 @@ public class XMLToScore {
     Pedal pedal = new Pedal(measure, type);
     measure.addElement(pedal);
   }
-  public static int getTimeOnly(Element element) {
+  private static int getTimeOnly(Element element) {
     int time = 0;
     if (element.hasAttribute("time-only")) {
       time += Integer.parseInt(element.getAttribute("time-only"));
@@ -1134,7 +1167,7 @@ public class XMLToScore {
     return time;
   }
 
-  public static void parseMetronome(Measure measure, Element element) throws MusicXMLParseException {
+  private static void parseMetronome(Measure measure, Element element) throws MusicXMLParseException {
     String beatUnit = null;
     int perMinute = 0;
     Note metronomeNote = null;
@@ -1152,8 +1185,8 @@ public class XMLToScore {
           perMinute = Integer.parseInt(perMinuteText.replaceAll("\\D+", ""));
         }
         else if (tag.equals("metronome-note")) {
-          metronomeNote = new Note(measure);
-          parseNote(metronomeNote, child);
+          Note note = parseNote(measure, child);
+          measure.addNote(note);
         }
         else if (tag.equals("metronome-relation")) {
           metronomeRelation = child.getTextContent();
@@ -1172,7 +1205,7 @@ public class XMLToScore {
     }
     measure.addElement(metronome);
   }
-  public static void parseSound(Measure measure, Element element) {
+  private static void parseSound(Measure measure, Element element) {
     Sound sound = new Sound(measure);
     if (element.hasAttribute("tempo")) {
       int tempo = Integer.parseInt(element.getAttribute("tempo"));
@@ -1236,7 +1269,7 @@ public class XMLToScore {
   
   /** Parse harmony
    */
-  public static void parseHarmony(Measure measure, Element element) {
+  static void parseHarmony(Measure measure, Element element) {
     Harmony.Root root;
     String kind;
     int inversion;
@@ -1265,7 +1298,7 @@ public class XMLToScore {
       }
     }
   }
-  public static Harmony.Root parseRoot(Element element) {
+  private static Harmony.Root parseRoot(Element element) {
     Harmony.Root root = null;
     int step = 0;
     int alter = 0;
@@ -1285,7 +1318,7 @@ public class XMLToScore {
     root = new Harmony.Root(step, alter);
     return root;
   }
-  public static Harmony.Bass parseBass(Element element) {
+  private static Harmony.Bass parseBass(Element element) {
     int step = 0;
     int alter = 0;
     Harmony.Bass bass;
@@ -1305,7 +1338,7 @@ public class XMLToScore {
     bass = new Harmony.Bass(step, alter);
     return bass;
   }
-  public static Harmony.Degree parseDegree(Element element) {
+  private static Harmony.Degree parseDegree(Element element) {
     int value = 0;
     int alter = 0;
     String type = null;
@@ -1362,7 +1395,7 @@ public class XMLToScore {
       }
     }
   }
-  public static Barline.Ending parseEnding(Element element) throws MusicXMLParseException {
+  private static Barline.Ending parseEnding(Element element) throws MusicXMLParseException {
     int number = element.hasAttribute("number") ? Integer.parseInt(element.getAttribute("number")) : 0;
     String type = element.hasAttribute("type") ? element.getAttribute("type") : null;
     if (number == 0) {
@@ -1374,7 +1407,7 @@ public class XMLToScore {
     Barline.Ending ending = new Barline.Ending(number, type);
     return ending;
   }
-  public static Barline.Repeat parseRepeat(Element element) {
+  private static Barline.Repeat parseRepeat(Element element) {
     if (!element.hasAttribute("direction")) {
       return null;
     }
@@ -1388,15 +1421,4 @@ public class XMLToScore {
   }
 
   // Miscellaneous helper methods
-  public static Element findElementById(Element sourceElement, String tagName, String id) {
-    NodeList tagList = sourceElement.getElementsByTagName(tagName);
-    Element sinkElement = null;
-    for (int i = 0; i < tagList.getLength(); i++) {
-      Element currentElement = (Element)tagList.item(i);
-      if (currentElement.getAttribute("id").equals(id)) {
-        sinkElement = currentElement;
-      }
-    }
-    return sinkElement;
-  }
 }

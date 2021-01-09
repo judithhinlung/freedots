@@ -74,18 +74,13 @@ public class MeasureTest extends TestCase {
   public void testCalculateDivisions() {
     Part p1 = new Part("p1");
     Measure m1 = new Measure(p1, 1);
-    Note note1 = new Note(m1);
-    note1.setDuration(new Fraction(1, 4));
-    Note note2 = new Note(m1);
-    note2.setDuration(new Fraction(1, 4));
-    Note note3 = new Note(m1);
-    note3.setDuration(new Fraction(1, 4));
-    Note note4 = new Note(m1);
-    note4.setDuration(new Fraction(1, 4));
-    Note note5 = new Note(m1);
-    note5.setDuration(new Fraction(1, 16));
-    Note note6 = new Note(m1);
-    note6.setDuration(new Fraction(1, 4));
+    Pitch pitch = new Pitch("p", 4, 0);
+    Note note1 = new Note(m1, pitch, new Fraction(1, 4));
+    Note note2 = new Note(m1, pitch, new Fraction(1, 4));
+    Note note3 = new Note(m1, pitch, new Fraction(1, 4));
+    Note note4 = new Note(m1, pitch, new Fraction(1, 4));
+    Note note5 = new Note(m1, pitch, new Fraction(1, 16));
+    Note note6 = new Note(m1, pitch, new Fraction(1, 4));
     m1.addNote(note1);
     m1.addNote(note2);
     m1.addNote(note3);
@@ -98,18 +93,14 @@ public class MeasureTest extends TestCase {
   public void testCalculateDivisionsWithTimeModification() {
     Part p1 = new Part("p1");
     Measure m1 = new Measure(p1, 1);
-    Note note1 = new Note(m1);
-    note1.setDuration(new Fraction(1, 4));
-    Note note2 = new Note(m1);
-    note2.setDuration(new Fraction(1, 4));
-    Note note3 = new Note(m1);
-    note3.setDuration(new Fraction(1, 4));
+    Pitch pitch = new Pitch("p", 4, 0);
+    Note note1 = new Note(m1, pitch, new Fraction(1, 4));
+    Note note2 = new Note(m1, pitch, new Fraction(1, 4));
+    Note note3 = new Note(m1, pitch, new Fraction(1, 4));
     note3.setTimeModification(new TimeModification(2, 3));
-    Note note4 = new Note(m1);
-    note4.setDuration(new Fraction(1, 4));
+    Note note4 = new Note(m1, pitch, new Fraction(1, 4));
     note4.setTimeModification(new TimeModification(2, 3));
-    Note note5 = new Note(m1);
-    note5.setDuration(new Fraction(1, 4));
+    Note note5 = new Note(m1, pitch, new Fraction(1, 4));
     note5.setTimeModification(new TimeModification(2, 3));
     m1.addNote(note1);
     m1.addNote(note2);
@@ -126,19 +117,16 @@ public class MeasureTest extends TestCase {
     Part p1 = new Part("p1");
     Measure m1 = new Measure(p1, 1);
     m1.setTime(new TimeSignature(4, 4));
-    Note note1 = new Note(m1);
-    note1.setDuration(new Fraction(1, 4));
-    Note note2 = new Note(m1);
-    note2.setDuration(new Fraction(1, 4));
-    Note note3 = new Note(m1);
-    note3.setDuration(new Fraction(1, 4));
+    Pitch pitch = new Pitch("p", 3, 4);
+    Note note1 = new Note(m1, pitch, new Fraction(1, 4));
+    Note note2 = new Note(m1, pitch, new Fraction(1, 4));
+    Note note3 = new Note(m1, pitch, new Fraction(1, 4));
     m1.addNote(note1);
     m1.addNote(note2);
     m1.addNote(note3);
     assertFalse(m1.isCompleteMeasure());//
-    Note note4 = new Note(m1);
-    note4.setDuration(new Fraction(1, 8));
-    Note note5 = new Note(m1);    note5.setDuration(new Fraction(1, 8));
+    Note note4 = new Note(m1, pitch, new Fraction(1, 8));
+    Note note5 = new Note(m1, pitch, new Fraction(1, 8));
     assertTrue(m1.isCompleteMeasure());
   }
 }

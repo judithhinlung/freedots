@@ -65,8 +65,7 @@ public class NoteTest extends TestCase {
       noteElement.appendChild(instrumentElement);
       Part part = new Part("p1");
       Measure measure = new Measure(part, 1);
-      Note note = new Note(measure);
-      XMLToScore.parseNote(note, noteElement);
+      Note note = XMLToScore.parseNote(measure, noteElement);
       assertEquals(4, note.getPitch().getOctave());
       assertEquals(0, note.getPitch().getStep());
       assertEquals(0, note.getPitch().getAlter());
@@ -102,7 +101,7 @@ public class NoteTest extends TestCase {
       technicalsElement.appendChild(fingeringElement);
       Part part = new Part("p1");
       Measure measure = new Measure(part, 1);
-      Note note = new Note(measure);
+      Note note = XMLToScore.parseNote(measure, noteElement);
       assertEquals(note.getTie(), false);
       assertEquals(note.getTied(), false);
       assertEquals(note.getSlur(), true);
@@ -122,11 +121,14 @@ public class NoteTest extends TestCase {
     Element restElement = document.createElement("rest");
     restElement.setAttribute("measure", "yes");
     noteElement.appendChild(restElement);
+      Element durationElement = document.createElement("duration");
+      durationElement.appendChild(document.createTextNode("24"));
+      noteElement.appendChild(durationElement);
+
     Part part = new Part("p1");
     Measure measure = new Measure(part, 1);
-    Note restNote = new Note(measure);
-    XMLToScore.parseNote(restNote, noteElement);
-    assertNotNull(restNote.getRest());
-    assertTrue(restNote.getRest().getIsMeasureRest());
+    Note note = XMLToScore.parseNote(measure, noteElement);
+    assertNotNull(note.getPitch());
+    assertTrue(note.getPitch().getIsMeasureRest());
   }
 }
