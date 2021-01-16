@@ -149,21 +149,6 @@ public class Measure {
     else {
       element.setMoment(this.offset);
       elements.add(element);
-    }
-  }
-  public void addBackupElement(Backup backup) {
-    backup.setMoment(this.offset);
-    elements.add(backup);
-    offset.subtract(backup.getDuration());
-  }
-  public void addForwardElement(Forward forward) {
-    forward.setMoment(this.offset);
-    elements.add(forward);
-    offset.add(forward.getDuration());
-  }
-  public boolean isCompleteMeasure() {
-    return this.offset.equals(this.getTime());
-  }
   public Staff getStaff(int staffNumber) {
     for (int i = 0; i < staves.size(); i++) {
       Staff staff = staves.get(i);
@@ -172,11 +157,5 @@ public class Measure {
       }
     }
     return null;
-  }
-  public void sortNotesOntoStaves() {
-    // TODO: Place measure elements onto individual staves, staves are created by parts
-  }
-  public void sortIntoVoices() {
-    // TODO: Sort elements onto voices, number of voices created on staves, done by part
   }
 }
