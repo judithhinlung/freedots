@@ -1,5 +1,7 @@
 package v2.music;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 import freedots.math.Fraction;
 public class Measure {
   Part part;
@@ -7,6 +9,7 @@ public class Measure {
   public Measure(Part part, int number) {
     this.part = part;
     this.number = number;
+    createStaves();
   }
   public Part getPart() {
     return this.part;
@@ -52,21 +55,31 @@ public class Measure {
 
   /** Returns a list of note durations for a measure.
    */
-  public ArrayList<Fraction> getDurationsList() {
-    ArrayList<MeasureElement> elements = this.getElements();
+  Fraction duration;
+  public Fraction getDuration() {
+    return this.duration;
+  }
+  ArrayList<Fraction> getDurationsList() {
     ArrayList<Fraction> durations = new ArrayList<Fraction>();
-    for (int i = 0; i < elements.size(); i++) {
-      MeasureElement element = elements.get(i);
-      if (element instanceof Note) {
-        Note note = (Note)element;
-        Fraction duration = note.getDuration();
-        if (note.getTimeModification() != null) {
-          TimeModification tm = note.getTimeModification();
-           int normal = tm.getNormalNotes();
-          int actual = tm.getActualNotes();
-          duration = duration.multiply(new Fraction(normal, actual));
+    for (int i = 0; i < staves.size(); i++) {
+      Staff staff = staves.get(i);
+      HashMap<Integer, Voice> voices = staff.getVoices();
+      for (Map.Entry<Integer, Voice> entry : voices.entrySet()) {
+        Voice voice = entry.getValue();
+        for (int j = 0; j < voice.getElements().size(); j++) {
+          MeasureElement element = voice.getElements().get(j);
+          Fraction duration = element.getDuration();
+          if (element instanceof Note) {
+            Note note = (Note)element;
+            if (note.getTimeModification() != null) {
+              TimeModification tm = note.getTimeModification();
+              int normal = tm.getNormalNotes();
+              int actual = tm.getActualNotes();
+              duration = duration.multiply(new Fraction(normal, actual));
+            }
+          }
+          durations.add(duration);
         }
-        durations.add(duration);
       }
     }
     return durations;
@@ -99,6 +112,16 @@ public class Measure {
   public Fraction getOffset() {
     return this.offset;
   }
+  ArrayList<Staff> staves = new ArrayList<Staff>();
+  public void createStaves() {
+    int numStaves = part.getStaves();
+    for (int i = 0; i < numStaves; i++) {
+      staves.add(new Staff(i+1));
+    }
+  }
+  public ArrayList<Staff> getStaves() {
+    return this.staves;
+  }
 
   ArrayList<MeasureElement> elements = new ArrayList<MeasureElement>();
   public ArrayList<MeasureElement> getElements() {
@@ -106,46 +129,54 @@ public class Measure {
   }
   public void addElement(MeasureElement element) {
     element.setMoment(this.offset);
-    elements.add(element);
+    if ((element instanceof Note) || (element instanceof Chord)) {
+      int staffNumber = element.getStaff();
+      int voiceNumber = element.getVoice();
+      Staff staff = getStaff(staffNumber);
+      if (!staff.hasVoice(voiceNumber)) {
+        staff.addVoice(new Voice(voiceNumber));
+      }
+      Voice voice = staff.getVoice(voiceNumber);
+      voice.addElement(element);
+      offset.add(element.getDuration());
+    }
+    else if (element instanceof Backup) {
+      offset.subtract(element.getDuration());
+    }
+    else if (element instanceof Forward) {
+      offset.add(element.getDuration());
+    }
+    else {
+      element.setMoment(this.offset);
+      elements.add(element);
+    }
   }
   public void addBackupElement(Backup backup) {
     backup.setMoment(this.offset);
     elements.add(backup);
+    offset.subtract(backup.getDuration());
   }
   public void addForwardElement(Forward forward) {
     forward.setMoment(this.offset);
     elements.add(forward);
-  }
-  public void addNote(Note note) {
-    note.setMoment(this.offset);
-    elements.add(note);
-    this.offset.add(note.getDuration());
-  }
-  public void removeNote(Note note) {
-    elements.remove(note);
-    this.offset.subtract(note.getDuration());
-  }
-  public void addChord(Chord chord) {
-    chord.setMoment(this.offset);
-    elements.add(chord);
-    this.offset.add(chord.getDuration());
-  }
-  public ArrayList<MeasureElement> getElementsAt(Fraction moment) {
-    if (moment.compareTo(0) < 0) {
-      throw new IllegalArgumentException("Negative offset");
-    }
-    final ArrayList<MeasureElement> elements = new ArrayList<MeasureElement>();
-    for (int i = 0; i < elements.size(); i++) {
-      MeasureElement element = elements.get(i);
-      if (element.getMoment().compareTo(moment) < 0) continue;
-      if (element.getMoment().equals(moment))
-        elements.add(element);
-      else
-        break;
-    }
-    return elements;
+    offset.add(forward.getDuration());
   }
   public boolean isCompleteMeasure() {
     return this.offset.equals(this.getTime());
+  }
+  public Staff getStaff(int staffNumber) {
+    for (int i = 0; i < staves.size(); i++) {
+      Staff staff = staves.get(i);
+      if (staves.get(i).getNumber() == staffNumber) {
+        return staff;
+      }
+    }
+    return null;
+  }
+  public void sortNotesOntoStaves() {
+    // TODO: Place measure elements onto individual staves, staves are created by parts
+  }
+  public void sortIntoVoices() {
+    // TODO: Sort elements onto voices, number of voices created on staves, done by part
   }
 }

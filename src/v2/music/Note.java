@@ -8,7 +8,6 @@ import freedots.math.Fraction;
 public class Note extends MeasureElement {
   Measure measure;
   Pitch pitch;
-  Fraction duration;
   public Note(Measure measure, Pitch pitch, Fraction duration) {
     super(measure);
     this.pitch = pitch;
@@ -18,9 +17,6 @@ public class Note extends MeasureElement {
   }
   public Pitch getPitch() {
     return this.pitch;
-  }
-  public Fraction getDuration() {
-    return this.duration;
   }
   String type;
   public String getType() {

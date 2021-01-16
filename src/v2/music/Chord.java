@@ -7,15 +7,20 @@ public class Chord extends MeasureElement {
     super(measure);
     notes = new ArrayList<Note>();
   }
+  public ArrayList<Note> getNotes() {
+    return this.notes;
+  }
   public void addNote(Note note) {
     this.notes.add(note);
   }
-  Fraction duration;
-  public Fraction getDuration() {
-    return this.duration;
-  }
   public void setDuration(Fraction duration) {
     this.duration = duration;
+  }
+  public int getStaff() {
+    return this.notes.get(0).getStaff();
+  }
+  public int getVoice() {
+    return this.notes.get(0).getVoice();
   }
 }
   

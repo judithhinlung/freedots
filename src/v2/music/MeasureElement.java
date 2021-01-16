@@ -36,4 +36,8 @@ public class MeasureElement {
   public void setVoice(int voice) {
     this.voice = voice;
   }
+  Fraction duration = Fraction.ZERO;
+  public Fraction getDuration() {
+    return this.duration;
+  }
 }

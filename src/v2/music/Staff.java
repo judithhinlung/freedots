@@ -1,15 +1,29 @@
 package v2.music;
+import java.util.HashMap;
 import java.util.ArrayList;
 public class Staff {
-  int staffNumber;
+  int number;
+  HashMap<Integer, Voice> voices;
   public Staff(int number) {
-    this.staffNumber = number;
+    this.number = number;
+    this.voices = new HashMap<Integer, Voice>();
   }
-  public int getStaffNumber() {
-    return this.staffNumber;
+  public int getNumber() {
+    return this.number;
   }
-  ArrayList<Note> notes = new ArrayList<Note>();
-  public ArrayList<Note> getNotes() {
-    return this.notes;
+  public boolean hasVoice(int voice) {
+    return this.voices.containsKey(voice);
+  }
+  public void addVoice(Voice voice) {
+    this.voices.put(voice.getNumber(), voice);
+  }
+  public Voice getVoice(int number) {
+    if (this.voices.containsKey(number)) {
+      return this.voices.get(number);
+    }
+    return null;
+  }
+  public HashMap<Integer, Voice> getVoices() {
+    return this.voices;
   }
 }
